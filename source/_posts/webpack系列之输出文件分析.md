@@ -23,9 +23,9 @@ categories: [javascript,webpack]
 
 ### 新建文件
 
-新建文件 webpack.config.js
-新建文件夹 src
-webpack.config.js
+新建文件 `webpack.config.js`
+新建文件夹 `src`
+`webpack.config.js`
 ```js
 const path = require('path');
 module.exports = {
@@ -38,9 +38,9 @@ module.exports = {
   },
 };
 ```
-
-src文件夹下，新增三个文件 main.js（入口文件） a.js b.js
-main.js
+<!-- more -->
+`src` 文件夹下，新增三个文件 `main.js`（入口文件） `a.js` `b.js`
+`main.js`
 ```js
 import { A1, A2 } from './a';
 import B from './b';
@@ -82,11 +82,11 @@ npx webpack --config webpack.config.js
   "./src/main.js": (function(module, __webpack_exports__, __webpack_require__) {}
 })
 ```
-从上面我们可以看到一个立即执行的函数，传递了一个对象，也就是modules的值，最终执行了__webpack_require__函数，执行的这个方法其实是我们在webpack里面设置的entry: './src/main.js'，对象里还有key，"./src/a.js" 、"./src/b.js"，也就是我们的 a.js 和 b.js
+从上面我们可以看到一个立即执行的函数，传递了一个对象，也就是 `modules` 的值，最终执行了 `__webpack_require__` 函数，执行的这个方法其实是我们在 `webpack` 里面设置的 `entry: ./src/main.js`，对象里还有`key`，`./src/a.js` 、`./src/b.js`，也就是我们的 `a.js` 和 `b.js`
 
-我们知道最开始执行了 __webpack_require__(__webpack_require__.s = "./src/main.js")方法，也就是 __webpack_require__("./src/main.js")，那么这个__webpack_require__方法又做了什么的
+我们知道最开始执行了 `__webpack_require__(__webpack_require__.s = "./src/main.js")` 方法，也就是 `__webpack_require__("./src/main.js")`，那么这个 `__webpack_require__` 方法又做了什么的
 
-原始的 __webpack_require__ 方法
+原始的 `__webpack_require__` 方法
 ```js
 // The module cache
 var installedModules = {};
@@ -138,10 +138,9 @@ function __webpack_require__(moduleId) {
 }
 ```
 
-接下来我们看看主入口'./src/main.js'这个key的值的内容
+接下来我们看看主入口 `./src/main.js` 这个 `key` 的值的内容
 
-'./src/main.js'，原内容是这样的，接下来来解释一下
-
+`./src/main.js`，原内容是这样的，接下来来解释一下
 ```js
 {
   "./src/main.js": (function(module, __webpack_exports__, __webpack_require__) {
@@ -176,8 +175,8 @@ function __webpack_require__(moduleId) {
   })
 }
 ```
-
-好了，现在来分析一下 __webpack_require__("./src/a.js") 做了哪些操作，我们先来看看 模块`./src/a.js`的内容
+ 
+好了，现在来分析一下 `__webpack_require__("./src/a.js")` 做了哪些操作，我们先来看看 模块` ./src/a.js` 的内容
 `./src/a.js`
 ```js
 {
@@ -191,8 +190,8 @@ function __webpack_require__(moduleId) {
 }
 ```
 
-代码内容很简单，首先 __webpack_require__("./src/a.js") 执行之后，会创建一个模块，然后去执行模块`./src/a.js`内部得方法，也是是上面这段，执行完成之后最终会把 `module.exports` 返回处理，
-那么module.exports这个是什么内容呢？
+代码内容很简单，首先 `__webpack_require__("./src/a.js")` 执行之后，会创建一个模块，然后去执行模块 `./src/a.js` 内部得方法，也是是上面这段，执行完成之后最终会把 `module.exports` 返回处理，
+那么 `module.exports` 这个是什么内容呢？
 看看 __webpack_require__ 内部
 ```js
 var module = installedModules[moduleId] = {
@@ -204,10 +203,9 @@ var module = installedModules[moduleId] = {
   modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
   return module.exports
 ```
-其实就是我们创建模块时的exports，然后执行到了模块`./src/a.js`内部得方法，它内部方法关键的地方在于又调用了 __webpack_require__.d 方法
+其实就是我们创建模块时的 `exports`，然后执行到了模块 `./src/a.js` 内部得方法，它内部方法关键的地方在于又调用了 `__webpack_require__.d` 方法
 
-__webpack_require__.d
-
+`__webpack_require__.d`
 ```js
 __webpack_require__.d = function(exports, name, getter) {
   if(!__webpack_require__.o(exports, name)) {
@@ -215,10 +213,56 @@ __webpack_require__.d = function(exports, name, getter) {
   }
 };
 ```
-执行 __webpack_require__.d(__webpack_exports__, "A1", function() { return A1; }); 可以看出来他给 module.exports 定义了一个key值 "key"，然后取值get的时候返回的是 A1(也就是a1)
+执行 `__webpack_require__.d(__webpack_exports__, "A1", function() { return A1; })`; 可以看出来他给 `module.exports` 定义了一个 `key` 值 `"key"`，然后取值 `get` 的时候返回的是 A1(也就是a1)
 
-所以最终 `return module.exports` 的值为 {A1: 'a1'}，
+所以最终 `return module.exports` 的值为 `{A1: 'a1'}`，
 
-我们回到 `./src/main.js` 模块，所以这段代码：var _a__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./a */ "./src/a.js");
+我们回到 `./src/main.js` 模块，所以这段代码：`var _a__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./a */ "./src/a.js")`;
 
- _a__WEBPACK_IMPORTED_MODULE_0__ 其实就是等于 {A1: 'a1'} console.log(_a__WEBPACK_IMPORTED_MODULE_0__["A1"])，取值为 a1，A2 同理
+ `_a__WEBPACK_IMPORTED_MODULE_0__` 其实就是等于 `{A1: 'a1'}` `console.log(_a__WEBPACK_IMPORTED_MODULE_0__["A1"])`，取值为 `a1`，`A2` 同理
+
+![bundle-a-js](/img/webpack-bundle-a-js.jpg)
+
+ 接下来我们看看模块 `./src/b.js`，在主模块它做了什么呢？看看 `./src/main.js`
+ ```js
+ ...
+ var _b__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./b */ "./src/b.js");
+ Object(_b__WEBPACK_IMPORTED_MODULE_1__["default"])();
+ ```
+ 看上面模块 `./src/b.js` 在主模块的执行第一段代码和之前介绍的一样，第二段代码直接执行了一个方法，这里我们可以猜测出 `_b__WEBPACK_IMPORTED_MODULE_1__` 其实就是一个对象，访问了它的 `key: default`
+然后它的key值其实是一个函数，最后执行了这个函数
+
+同理我们可以看看模块 `./src/b.js` 内部的方法，以及我们在 `src` 文件夹下的 `b.js` 是怎么写的
+模块 `./src/b.js`
+```js
+{
+  "./src/b.js": (function(module, __webpack_exports__, __webpack_require__) {
+    __webpack_require__.r(__webpack_exports__);
+    /* harmony default export */ __webpack_exports__["default"] = (function() {
+      console.log('b');
+  });
+}
+```
+
+`b.js`
+```js
+export default function() {
+  console.log('b');
+}
+```
+
+从我们源代码看出，我们是直接导出了一个方法，内部执行了打印字符串`b`，然后再来看看 `webapck` 的源码部分，`__webpack_require__.r(__webpack_exports__)`; 这段可以忽略，解释一下，其实这段代码在对象里定义了一个 `__esModule: true`，接着看下面一段，我们从之前讲的知道知道 `__webpack_exports__` 其实就是一个单纯的空对象（其实不是，执行了 `__webpack_require__.r(__webpack_exports__` )就变成了 `{__esModule: true}`)，然后它又在对象里增加了一个 `default` 属性，然后把一个方法赋值给它(其实就是我们打包之前写的一个方法)，最终在主入口里执行的模块 `var _b__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./b */ "./src/b.js")`；其实就等于 `{"default": function{}}`，然后下一步执行访问对象 `default` 的值去执行函数
+
+![bundle-b-js](/img/webpack-bundle-b-js.jpg)
+
+## 思考
+
+可能现在你可能会思考🤔，通过上面的比较可以得出一个结论
+
+通过 `export` 出来，如果 `import {a,b,c} from '..'`，打包出来的代码执行简单操作之后（执行 `__webpack_require__` 函数）首先会是一个对象，对象会是 `{a: ..., b: ..., c: ...}`
+
+同过 `export default` 出来，如果 `import a from '..'`，打包处理的代码执行简单操作之后（执行 `__webpack_require__` 函数）首先会是一个对象，然后会往对象里添加一个default的key，类似 `{default: ...}`
+
+## 总结
+
+整个过程还是挺绕的，你可以自己去 `debugger` 看看他的执行过程，应该就明白得差不多了，今天就讲了这些吧
