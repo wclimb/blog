@@ -16,6 +16,8 @@ categories: [javascript,webpack]
 
 ### 安装
 
+开发环境 `webpack: 4.34.0`
+
 ```
 > npm inin -y
 > cnpm i webpack webpack-cli -D
@@ -266,3 +268,5 @@ export default function() {
 ## 总结
 
 整个过程还是挺绕的，你可以自己去 `debugger` 看看他的执行过程，应该就明白得差不多了，今天就讲了这些吧
+
+本文地址 [webpack系列之输出文件分析](http://www.wclimb.site/2019/06/19/webpack%E7%B3%BB%E5%88%97%E4%B9%8B%E8%BE%93%E5%87%BA%E6%96%87%E4%BB%B6%E5%88%86%E6%9E%90/)

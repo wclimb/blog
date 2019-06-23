@@ -35,6 +35,7 @@ webpack的优势在模块化，`gulp`除了模块化方面都很不错。但是�
 ## 安装
 
 这里可以参考[webpack官网](https://www.webpackjs.com/guides/getting-started/#%E5%9F%BA%E6%9C%AC%E5%AE%89%E8%A3%85)
+开发环境 `webpack: 4.34.0`
 ```
 > mkdir webpack && cd webpack
 > npm init -y
@@ -468,3 +469,5 @@ module.exports = {
 累了累了，写到这已经是凌晨了。不多BB了，现在基本的webpack操作应该都已经学会了吧，后面就是稍微深入的玩一玩webpack了，成为一个webpack配置工程师？
 
 <font size=10>to be continued...</font>
+
+本文地址 [webpack系列之初探](http://www.wclimb.site/2019/06/06/webpack%E7%B3%BB%E5%88%97%E4%B9%8B%E5%88%9D%E6%8E%A2/)
