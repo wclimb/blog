@@ -90,7 +90,7 @@ class TestPlguin() {
   }
 }
 ```
-上面的例子意思是，当``webpack`执行到最终要输出文件得时候，我在这个操作之前去打印一段话，通常是我们输出文件到`dist`文件夹之前那一步
+上面的例子意思是，当`webpack`执行到最终要输出文件得时候，我在这个操作之前去打印一段话，通常是我们输出文件到`dist`文件夹之前那一步
 如果你实现写好了这些钩子，那么`webpack`在编译的流程里都会执行上面几个钩子。想了解更多访问 https://www.webpackjs.com/api/compiler-hooks/
 
 ### Compilation
