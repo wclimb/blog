@@ -10,7 +10,7 @@ categories: [javascript,webpack]
 
 ## 写在前面
 
-使用`webpack`或者自己配置研究过`webpack`的人都知道plugin，也就是`webpack`的插件，对于大多数人来说，经常使用的插件诸如：`clean-webpack-plugin`、`html-webpack-plugin`等等，在很多情况下，我们只会去用它，知道他是干什么的，但是其内部做的操作缺知之甚少，今天我们就来写一个`plugin`
+使用`webpack`或者自己配置研究过`webpack`的人都知道`plugin`，也就是`webpack`的插件，对于大多数人来说，经常使用的插件诸如：`clean-webpack-plugin`、`html-webpack-plugin`等等，在很多情况下，我们只会去用它，知道他是干什么的，但是其内部做的操作缺知之甚少，今天我们就来写一个`plugin`
 
 ## 基础
 
