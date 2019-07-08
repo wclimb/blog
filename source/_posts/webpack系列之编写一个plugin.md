@@ -291,4 +291,4 @@ module.exports = {
 
 今天我们学习了一如何编写一个插件，当然只是简单的操作了，可以思考一下，要实现`clean-webpack-plugin`或者`html-webpack-plugin`插件，我们该怎么做？
 
-本文地址 [webpack系列之输出文件分析](http://www.wclimb.site/2019/06/21/webpack系列之编写一个plugin/)
+本文地址 [webpack系列之编写一个plugin](http://www.wclimb.site/2019/06/21/webpack系列之编写一个plugin/)
