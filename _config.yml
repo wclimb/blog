@@ -68,11 +68,9 @@ theme: next
 #scheme: Mist
 #scheme: Pisces
 
-
-
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repo: git@www.wclimb.site:/root/blog.git  #在仓库找到该仓库的ssh
+  repo: git@www.wclimb.site:/root/blog.git #在仓库找到该仓库的ssh
   branch: master #分支，这里为github-pages

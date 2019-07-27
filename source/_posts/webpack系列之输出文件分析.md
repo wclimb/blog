@@ -19,7 +19,7 @@ categories: [javascript,webpack]
 开发环境 `webpack: 4.34.0`
 
 ```
-> npm inin -y
+> npm init -y
 > cnpm i webpack webpack-cli -D
 ```
 
