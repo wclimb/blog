@@ -9,8 +9,9 @@ tags:
 categories: [javascript,vue]
 ---
 
-
 ## vuex使用
+
+当前vuex版本：3.1.0
 
 ```js
 import Vue from 'vue';
