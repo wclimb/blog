@@ -33,6 +33,7 @@ $ sudo apt-get install gitlab-ci-multi-runner
 $ curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-ci-multi-runner/script.rpm.sh | sudo bash
 $ sudo yum install gitlab-ci-multi-runner
 ```
+<!-- more -->
 
 1. 接下来注册一个`Runner`
 ```
@@ -52,7 +53,7 @@ Please enter the gitlab-ci token for this runner
 ```
 ![](/img/ci-token.jpg)
 
-4. 输入runner的描述
+4. 输入`runner`的描述
 
 ```
 Please enter the gitlab-ci description for this runner

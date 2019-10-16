@@ -27,11 +27,11 @@ type: "about"
 ```js
 {
   name: 'wclimb'
-  age: 24,
+  age: 25, // +1 其实是拒绝的
   gender: '男',
   Github: 'https://github.com/wclimb',
   blog: 'http://www.wclimb.site/',
-  email: 'wclimb_1023@163.com',
+  email: 'wclimb1994@gmail.com',
   skills: [
     ['HTML', 'JavaScript', 'jQuery', 'Zepto', 'CSS3', 'ES6', 'Node'],
     ['Vue', 'vuex', 'vue-router'],
@@ -52,6 +52,7 @@ type: "about"
 
 ## 个人小程序
 
+小程序因为资源空间和https证书到期暂时没有续期，所以暂停访问吧。
 ![img](http://www.wclimb.site/cdn/xcx.jpeg)
 待完善......
 
