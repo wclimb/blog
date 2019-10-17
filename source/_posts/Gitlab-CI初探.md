@@ -9,6 +9,7 @@ categories: [工具, 自动化]
 
 因为项目一直都是使用`gitlab`进行自动化部署，但是都是前人种树，后人乘凉的现状。难得抽空花了一点时间来玩一下`gitlab`的`CI`
 
+[官方README](https://gitlab.com/help/ci/quick_start/README)
 
 ## 准备工作
 
@@ -17,7 +18,6 @@ categories: [工具, 自动化]
 
 ## 新建.gitlab-ci.yml
 
-[官方README](https://gitlab.com/help/ci/quick_start/README)
 
 项目下新建文件 `.gitlab-ci.yml`，你也可以使用`Web IDE` 在线新建文件
 
@@ -54,7 +54,6 @@ Please enter the gitlab-ci token for this runner
 ![](/img/ci-token.jpg)
 
 4. 输入`runner`的描述
-
 ```
 Please enter the gitlab-ci description for this runner
 这里随便填
@@ -87,7 +86,7 @@ shell  // 这里选shell，很多人使用的是docker
 Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
 ```
 
-现在刷新一下之前复制token的地方看看，是不是刚刚新建的runner生效了
+现在刷新一下之前复制token的地方看看，是不是刚刚新建的`runner`生效了
 
 ## Pipeline
 
@@ -148,18 +147,18 @@ job1:
     - my-tag 
 ```
 
-`stages` 就是我们上面讲的构建阶段，这里有两个阶段，先`build`然后`test`，会先执行任务 `job1` 然后 执行 `job2`，这里`job1/2`名称可用随便取，不影响
-`stage` 表示构建的子任务
-`script` 执行的`shell`命令
-`only` 只有在master做操作的时候会触发这个构建
-`tags` 这就是我们之前在服务器命名的`tag`，必填
+- `stages` 就是我们上面讲的构建阶段，这里有两个阶段，先`build`然后`test`，会先执行任务 `job1` 然后 执行 `job2`，这里`job1/2`名称可用随便取，不影响
+- `stage` 表示构建的子任务
+- `script` 执行的`shell`命令
+- `only` 这里填写表示只有在`master`做操作的时候会触发这个构建
+- `tags` 这就是我们之前在服务器命名的`tag`，必填
 
 
-我们把这个文件push到master，然后在 CI/CD -> Pipelines 查看我们正在执行的任务
+我们把这个文件`push`到`master`，然后在 `CI/CD -> Pipelines` 查看我们正在执行的任务
 
 ![](/img/ci-pipe.jpg)
 
-如果status显示passed了，则代表运行成功
+如果`status`显示`passed`了，则代表运行成功
 
 至此，大功告成
 
@@ -184,7 +183,6 @@ job1:
 因此想要更改`user`为`root`只需要重新设置`--user`属性即可，步骤如下：
 
 1. 删除`gitlab-runner`
-
 ```
 sudo gitlab-runner uninstall
 ```
