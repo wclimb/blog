@@ -26,7 +26,7 @@ type: "about"
 
 ```js
 {
-  name: 'wclimb'
+  name: 'wclimb',
   age: 25, // +1 其实是拒绝的
   gender: '男',
   Github: 'https://github.com/wclimb',
@@ -37,13 +37,14 @@ type: "about"
     ['Vue', 'vuex', 'vue-router'],
     ['React', 'redux', 'react-router'],
     ['gulp', 'webpack'],
-    ['sass','less'],
+    ['sass', 'less'],
     ['git'],
-    ['express','koa','egg'],
-    ['mysql','mongoDB','sequelize'],
-    ['小程序','mpvue','微信公众号']
+    ['express', 'koa', 'egg'],
+    ['mysql', 'mongoDB', 'sequelize'],
+    ['小程序', 'mpvue', '微信公众号'],
+    ['linux', 'Docker'],
   ],
-  description: '喜欢新事物，关注前端动态，对新的技术有追求。'
+  description: '喜欢新事物，关注前端动态，对新的技术有追求。',
 }
 ```
 ## QQ群

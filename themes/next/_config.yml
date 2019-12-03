@@ -6,7 +6,7 @@
 favicon: /img/favicon.ico
 
 # Set default keywords (Use a comma to separate)
-keywords: 'Hexo, NexT'
+keywords: "Hexo, NexT"
 
 # Set rss to false to disable feed link.
 # Leave rss as empty to use site's feed link.
@@ -203,11 +203,9 @@ links_title: Links
 #links_layout: block
 #links_layout: inline
 links:
-  phpbest: http://phpbest.cn
-  phpojbk: http://www.phpojbk.com/
+  dcdcdog: https://dcdcdog.com
   技术鹏: http://www.jspeng.com
   苏博客: http://www.suchenqiang.cn/
-  dcdcdog: https://dcdcdog.com
 
 # ---------------------------------------------------------------
 # Post Settings
@@ -457,7 +455,7 @@ algolia_search:
   labels:
     input_placeholder: Search for Posts
     hits_empty: "We didn't find any results for the search: ${query}"
-    hits_stats: '${hits} results found in ${time} ms'
+    hits_stats: "${hits} results found in ${time} ms"
 
 search:
   path: search.xml
