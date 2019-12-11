@@ -40,7 +40,7 @@ type: "about"
     ['sass', 'less'],
     ['git'],
     ['express', 'koa', 'egg'],
-    ['mysql', 'mongoDB', 'sequelize'],
+    ['mysql', 'redis', 'mongoDB', 'sequelize'],
     ['小程序', 'mpvue', '微信公众号'],
     ['linux', 'Docker'],
   ],
