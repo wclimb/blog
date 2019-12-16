@@ -10,7 +10,7 @@ categories: [javascript, Koa]
 
 ## 写在前面
 
-上一篇我们讲了 [Koa源码系列之koa-compose](http://www.wclimb.site/2019/12/11/Koa源码系列之koa-compose/)，其实也可以归为到这篇文章。今天开始我们看看Koa源码中使用了哪些包，他们起到了什么作用。ps: 这里不准备讲所有的包
+上一篇我们讲了 [Koa源码系列之koa-compose](http://www.wclimb.site/2019/12/11/Koa源码系列之koa-compose/)，其实也可以归为到这篇文章。今天开始我们看看`Koa`源码中使用了哪些包，他们起到了什么作用。ps: 这里不准备讲所有的包
 
 ## is-generator-function
 
