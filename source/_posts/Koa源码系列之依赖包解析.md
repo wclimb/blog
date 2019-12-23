@@ -112,6 +112,97 @@ if (!hasToStringTag) {
   return str === '[object GeneratorFunction]';
 }
 ```
+## delegates
+
+在koa内使用
+https://github.com/koajs/koa/blob/master/lib/context.js#L191
+```js
+/**
+ * Response delegation.
+ */
+delegate(proto, 'response')
+  .method('attachment')
+  .method('redirect')
+  .method('remove')
+  .method('vary')
+  .method('has')
+  .method('set')
+  .method('append')
+  .method('flushHeaders')
+  .access('status')
+  .access('message')
+  .access('body')
+  .access('length')
+  .access('type')
+  .access('lastModified')
+  .access('etag')
+  .getter('headerSent')
+  .getter('writable');
+```
+乍一看看不出它有啥用处，其实很简单，它相当于做了代理，本来我们访问`body`需要`ctx.response.body`，现在你只需要`ctx.body`就可以了。是不是很简单？那么我们看一下这个包的源码具体怎么实现的
+```js
+function Delegator(proto, target) {
+ ...
+}
+Delegator.prototype.getter = function(name){
+  ...
+};
+Delegator.prototype.access = function(name){
+  ...
+};
+Delegator.prototype.setter = function(name){
+  ...
+};
+Delegator.prototype.method = function(name){
+  ...
+};
+```
+上面的👆代码就是 [delegates](https://github.com/tj/node-delegates) 包的大致总体结构，还有其他几个方法这里不做介绍。我们可以先来看一下方法 `Delegator` 构造函数
+```js
+function Delegator(proto, target) {
+  if (!(this instanceof Delegator)) return new Delegator(proto, target);
+  this.proto = proto;
+  this.target = target;
+  // 以下可以忽略
+  this.methods = [];
+  this.getters = [];
+  this.setters = [];
+  this.fluents = [];
+}
+```
+从上面我们可以看到，接收两个参数，分别是对应的对象和目标`key`值，`koa`使用的是 `delegate(proto, 'response')`，`proto`就是`ctx`，`response`就是目标`key`值。
+
+继续看`getter`
+```js 
+Delegator.prototype.getter = function(name){
+  var proto = this.proto;
+  var target = this.target;
+  this.getters.push(name);
+
+  proto.__defineGetter__(name, function(){
+    return this[target][name];
+  });
+
+  return this;
+};
+```
+通过以上代码可以得知，它使用的是`__defineGetter__`来代理获取值，访问`ctx.body`的时候，其实返回的值是 `this[target][name]`，`target`我们已经知道，是`response`，然后在这里`body`就是`name`了。
+但是我查看 [__defineGetter__](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/__defineGetter__) 这个`api`，发现 **该特性是非标准的，请尽量不要在生产环境中使用它！**，我们思考以下，其实我们可以使用`Object.defineProperty`，把它进行改造
+```js
+Object.defineProperty(proto, name, {
+  get: function() {
+    return this[target][name];
+  }
+});
+```
+其实我们看一下该项目的`PR`会发现，已经有人提了`PR`，但是一直没有`meger`。
+剩下的可以同理，`setter`使用的是`__defineSetter__`方法，我们就可以借助`Object.defineProperty`的`set`进行改造。
+`access`方法则是两者方法的集合，如果满足可以获取值和设置值条件，都可以使用`access`，比较方便，它的源码也很好理解，同时调用 `get`和`set`
+```js
+Delegator.prototype.access = function(name){
+  return this.getter(name).setter(name);
+};
+```
 
 ## koa-convert
 
