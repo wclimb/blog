@@ -52,6 +52,7 @@ module.exports = class Application extends Emitter {
   ...
 }
 ```
+<!-- more -->
 以上代码就是暴露出来的构造函数，所以我们可以使用`new Koa()`的形式调用，它继承了（`extends Emitter`这段代码）`node`提供的原生 `events`（事件触发器）方法，那么它在哪用到了呢？我们知道`koa`可以使用 `app.on('error')` 来监听错误，可以看下面代码
 ```js
 app.on('error', err => {
