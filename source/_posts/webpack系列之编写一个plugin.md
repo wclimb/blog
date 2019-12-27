@@ -33,7 +33,7 @@ module.exports = {
 <!-- more -->
 我们经常使用的插件是长这样的，每个插件都是一个构造函数，通过`new`一个它的实例来使用。知道了插件是一个构造函数，那么我们可以推断出下面的结构
 ```js
-class TestPlguin(){
+class TestPlguin{
   ...
 }
 ```
@@ -45,7 +45,7 @@ webpack 插件由以下组成：
   - 功能完成后调用 webpack 提供的回调。
 
 ```js
-class TestPlguin() {
+class TestPlguin {
   constructor(){
     
   }
@@ -81,7 +81,7 @@ class TestPlguin() {
 3. `failed`：编译(compilation)失败
 
 ```js
-class TestPlguin() {
+class TestPlguin {
   ...
   apply(compiler){
     compiler.hooks.emit.tap('MyPlugin', params => {
@@ -107,7 +107,7 @@ class TestPlguin() {
 4. `additionalAssets`：为编译(compilation)创建附加资源(asset)
 
 ```js
-class TestPlguin() {
+class TestPlguin {
   ...
   apply(compiler){
     compiler.hooks.emit.tap('MyPlugin', compilation => {
