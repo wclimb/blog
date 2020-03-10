@@ -40,7 +40,7 @@ node app.js
 2. 父进程下面构建出一个子进程
 3. 父进程退出
 
-第一个流程没问题，第二个，我们怎么创建一个子进程呢？这里我们需要借助`child_process`，名字就很明显了，子进程。我们可以借助方法 `spawn` 来实现，用得比较多的还有`exec`方法（可以执行shell命令）
+第一个流程没问题，第二个，我们怎么创建一个子进程呢？这里我们需要借助`child_process`，名字就很明显了，子进程。我们可以借助方法 `spawn` 来实现，用得比较多的还有`exec`方法（可以执行`shell`命令）
 ```js
 const spawn = require("child_process").spawn;
 const child = spawn("node", ["app.js"], {
