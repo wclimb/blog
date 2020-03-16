@@ -11,11 +11,14 @@ categories: [javascript, vue]
 
 ## 前言
 
-近一年多都在做小程序开发，`Vue` 感觉都有写些生疏了，从今天开始阅读一下 `Vue` 的源码，了解其内部的工作机制，本文涉及的 `Vue` 版本为 `2.6.11`，我已经提前 `fork` 了一份到 `github` 上
+近一年多都在做小程序开发，`Vue` 感觉都有写些生疏了，从今天开始阅读一下 `Vue` 的源码，了解其内部的工作机制，本文涉及的 `Vue` 版本为 `2.6.11`，我已经提前 `fork` 了一份到 [github](https://github.com/wclimb/vue) 上
 
 ## 双向数据绑定
 
-提到 `Vue`，自然会想到双向数据绑定，要说他的原理，你也能脱口而出，使用 `Object.defineProperty` 的 `get`、`set`来实现，但要把功能做更强大健壮，往往并不是这么简单
+提到 `Vue`，自然会想到双向数据绑定，要说他的原理，你也能脱口而出，使用 `Object.defineProperty` 的 `get`、`set`来实现，但要把功能做更强大健壮，往往并不是这么简单。`Vue`的双向数据绑定由以下几个部分组成
+1. `Obserber监听器`：负责数据的劫持调用`Object.defineProperty`来实现监听效果，`get`负责收集依赖，`set`负责派发更新
+2. `Dep订阅器`：负责订阅者的收集，收集依赖
+3. `Watcher订阅者`：负责更新视图
 
 ## 从入口开始
 
@@ -57,7 +60,7 @@ export function initState (vm: Component) {
   if (opts.props) initProps(vm, opts.props)
   // 挂载定义的方法
   if (opts.methods) initMethods(vm, opts.methods)
-  // 如果存在data，执行initData开始创建观察者
+  // 如果存在data，执行initData开始创建监听器
   if (opts.data) {
     initData(vm)
   } else {
@@ -89,7 +92,7 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
     return
   }
   let ob: Observer | void
-  // 这里判断当前是否已经存在观察者，如果有就直接返回
+  // 这里判断当前是否已经创建过Observer，如果有就直接返回
   if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
     ob = value.__ob__
   } else if (
@@ -99,7 +102,7 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
     Object.isExtensible(value) &&
     !value._isVue
   ) {
-    // 这里是重点，创建一个观察者
+    // 这里是重点，创建一个Observer
     ob = new Observer(value)
   }
   if (asRootData && ob) {
@@ -109,7 +112,7 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
 }
 ```
 
-### Observer 
+### Observer-监听器
 
 ```js
 export class Observer {
@@ -145,10 +148,7 @@ export class Observer {
       defineReactive(obj, keys[i])
     }
   }
-
-  /**
-   * Observe a list of Array items.
-   */
+  // 为数组创建Observer监听器
   observeArray (items: Array<any>) {
     for (let i = 0, l = items.length; i < l; i++) {
       observe(items[i])
@@ -232,7 +232,7 @@ export function defineReactive (
 }
 ```
 
-## Dep
+## Dep-订阅器
 
 ` Dep` 在 `Vue` 里面也是关键的一环，它负责依赖收集，从上面 `defineReactive` 内部方法有看到实例化了一个 `dep`，然后有使用到`Dep.target`、`dep.depend()`、`dep.notify()`，那么我们来看看 `Dep` 的实现
 
@@ -342,7 +342,8 @@ export function mountComponent (
 ```
 上面代码很重要，主要是视图的初始化过程，我们还可以看到两个生命周期，`beforeMount`和`mounted`，实例化`Watcher`，传递了几个主要参数，分别是`vm`、`updateComponent`、和一个 `before` 方法，`vm` 就是当前 `Vue` 的`this`了，重点在 `updateComponent` 方法，内部是 `vm._update(vm._render(), hydrating)` ，既然是初始化渲染视图，那么它也没有调用呀，我们先说 `vm._render()`，它的作用是生成当前 `vnode`，也就是虚拟 `dom`，通过 `vm.__update` 来更新视图，这里其实就牵扯到了新旧虚拟 `dom` 的比较，也就是 `diff` 算法，我们知道现在是初始化，也就是说只有一个 `vnode`，直接渲染就可以了，关键是在这里它没有执行，所以接下来我们需要看看 `Watcher` 做了什么
 
-## Wachter
+## Wachter-订阅者
+
 https://github.com/wclimb/vue/blob/dev/src/core/observer/watcher.js#L22
 ```js
 export default class Watcher {
@@ -543,7 +544,7 @@ export function queueWatcher (watcher: Watcher) {
     if (!flushing) {
       queue.push(watcher)
     } else {
-      // 如果已经刷新，则根据其ID拼接观察者
+      // 如果已经刷新，则根据其ID拼接订阅者
       // 如果已经超过其ID，它将立即运行
       let i = queue.length - 1
       while (i > index && queue[i].id > watcher.id) {
@@ -578,8 +579,8 @@ function flushSchedulerQueue () {
   //在刷新之前对队列进行排序。
   //这样可以确保：
   //1.组件从父级更新为子级。 （因为父母总是在子级之前创建）
-  //2.组件的用户监视程序先于其呈现监视程序运行（因为用户观察者先于渲染观察者创建）
-  //3.如果在父组件的观察者运行期间破坏了某个组件，可以跳过其观察者
+  //2.组件的用户监视程序先于其呈现监视程序运行（因为用户订阅者先于渲染订阅者创建）
+  //3.如果在父组件的订阅者运行期间破坏了某个组件，可以跳过其订阅者
   queue.sort((a, b) => a.id - b.id)
 
   // do not cache length because more watchers might be pushed
