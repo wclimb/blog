@@ -167,8 +167,8 @@ Vue.prototype.$mount = function (
   return mount.call(this, el, hydrating)
 };
 ```
-我们先看上面 `template`是什么，`template`其实是我们写的模版的`html`比如 `<div id="app"></div>`，然后把模版给`compileToFunctions`方法去解析，这过程就是生成`ast` `html`树。得到`ref`对象，
-内部有一个`render`方法，它的方法就是类似下面代码一样,比如 `_c`其实就是我们后面要讲的创建生成`vnode`元素方法
+我们先看上面 `template` 是什么，`template` 其实是我们写的模版的 `html` 比如 `<div id="app"></div>`，然后把模版给 `compileToFunctions` 方法去解析，这过程就是生成`ast` `html`树。得到 `ref` 对象，
+内部有一个`render`方法，它的方法就是类似下面代码一样,比如 `_c` 其实就是我们后面要讲的创建生成 `vnode` 元素方法
 
 ```js
 with(this){return _c('div',{attrs:{"id":"div1"}},_l((arr),function(item,idx){return _c('span',{key:item},[_v(_s(item))])}),0)}
@@ -209,7 +209,7 @@ Vue.prototype.$mount = function (
   return mountComponent(this, el, hydrating)
 }
 ```
-上面代码继续调用了`mountComponent`方法，继续往下看
+上面代码继续调用了 `mountComponent` 方法，继续往下看
 
 ### mountComponent
 
@@ -305,7 +305,7 @@ Vue.prototype._render = function (): VNode {
     return vnode
   }
 ```
-我们主要看这一段代码 `vnode = render.call(vm._renderProxy, vm.$createElement)`，生成`虚拟DOM`，之前会把 `vm.$createElement` 方法传入，其实就是创建`vnode`元素的方法，最后会执行render方法，`render`方法就是我们之前`compileToFunctions`函数生成对象的方法，
+我们主要看这一段代码 `vnode = render.call(vm._renderProxy, vm.$createElement)`，生成 `虚拟DOM`，之前会把 `vm.$createElement` 方法传入，其实就是创建 `vnode` 元素的方法，最后会执行render方法，`render` 方法就是我们之前 `compileToFunctions` 函数生成对象的方法，
 
 ### $createElement
 
@@ -400,7 +400,7 @@ export function _createElement (
 
 ## diff更新虚拟DOM
 
-之前我们又说到用_render来生成vnode树，用_update来更新视图
+之前我们又说到用`_render`来生成`vnode`树，用`_update`来更新视图
 
 ### _update
 
@@ -423,7 +423,7 @@ Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {
   .....
 }
 ```
-上面第一个参数传递的就是`虚拟DOM`，也就是本文之前说的`_render()`返回的`vnode`，我们需要继续看`__patch__`方法
+上面第一个参数传递的就是`虚拟DOM`，也就是本文之前说的 `_render()` 返回的 `vnode` ，我们需要继续看 `__patch__` 方法
 
 ### __patch__
 
@@ -451,7 +451,7 @@ return function patch (oldVnode, vnode, hydrating, removeOnly) {
   return vnode.elm
 }
 ```
-`patch`方法主要做了两件事情，如果没有旧的`虚拟DOM`，旧会重新创建一个根节点。否则的话使用`sameVnode`判断 `oldVnode`和`vnode`是否是相同的节点(这个相同不是完全都相同)，`sameVnode`的作用主要是判断是否只需要作局部刷新，来看看具体的代码
+`patch`方法主要做了两件事情，如果没有旧的 `虚拟DOM`，旧会重新创建一个根节点。否则的话使用`sameVnode`判断 `oldVnode`和`vnode`是否是相同的节点(这个相同不是完全都相同)，`sameVnode`的作用主要是判断是否只需要作局部刷新，来看看具体的代码
 ```js
 function sameVnode (a, b) {
   return (
@@ -470,7 +470,7 @@ function sameVnode (a, b) {
   )
 }
 ```
-主要判断`key` `tag`，如果 `key` 并且 `tag` 相同我们旧可以判定作局部刷新，如果不相同那么就会直接跳过 `diff`，进而依据 `vnode` 新建一个真实的 `DOM`，删除旧的 `DOM`节点。我们看看`Vue`是怎么`diff`的，继续看 `patchVnode` 代码
+主要判断`key` `tag`，如果 `key` 并且 `tag` 相同我们旧可以判定作局部刷新，如果不相同那么就会直接跳过 `diff`，进而依据 `vnode` 新建一个真实的 `DOM`，删除旧的 `DOM` 节点。我们看看`Vue`是怎么`diff`的，继续看 `patchVnode` 代码
 
 ### patchVnode
 
@@ -641,7 +641,7 @@ new Vue({
 ### 有key的情况
 
 ![](/img/diff/1.jpg)
-解析👆：最开始的 `startIdx` 都是`0`，都会从最开始比对，第一位是 `A` 和 `B`，发现不一样，整个判断下来，发现前后都没有一样的元素，那么就会走第7个判断，通过key值来查找，他会去旧的`虚拟DOM`里找`B`元素，发现找到来，先把他置为 `undefined` ，然后把他插入到A的前面，然后`newStartIdx`进一位，此轮`diff`完成
+解析👆：最开始的 `startIdx` 都是`0`，都会从最开始比对，第一位是 `A` 和 `B`，发现不一样，整个判断下来，发现前后都没有一样的元素，那么就会走第7个判断，通过`key`值来查找，他会去旧的`虚拟DOM`里找`B`元素，发现找了，先把他置为 `undefined` ，然后把他插入到A的前面，然后`newStartIdx`进一位，此轮`diff`完成
 
 ![](/img/diff/2.jpg)
 解析👆：现在`newStartIdx`来到了 `C` 这里，同样先看看有没有前后一样的，发现没有，又走到第7个判断里，通过 `key` 值来查找，找到 `C` 之后，把旧的`C`置为`undefined`，然后把`C`插入到`A`前面，然后`newStartIdx`进一位，此轮 `diff` 完成
