@@ -74,7 +74,7 @@ export function initState (vm: Component) {
 
 ### initData
 
-https://github.com/wclimb/vue/blob/dev/src/core/instance/state.js#L102
+https://github.com/wclimb/vue/blob/dev/src/core/instance/state.js#L112
 ```js
 function initData (vm: Component) {
   ....
@@ -85,7 +85,7 @@ function initData (vm: Component) {
 
 ### observe
 
-https://github.com/wclimb/vue/blob/dev/src/core/observer/index.js#L106
+https://github.com/wclimb/vue/blob/dev/src/core/observer/index.js#L110
 ```js
 export function observe (value: any, asRootData: ?boolean): Observer | void {
   if (!isObject(value) || value instanceof VNode) {
@@ -161,7 +161,7 @@ export class Observer {
 
 下面代码是双向数据绑定额核心
 
-https://github.com/wclimb/vue/blob/dev/src/core/observer/index.js#L131
+https://github.com/wclimb/vue/blob/dev/src/core/observer/index.js#L135
 ```js
 export function defineReactive (
   obj: Object,
@@ -292,7 +292,8 @@ export function popTarget () {
 
 为什么 `Dep.target` 会有值呢？因为实例化一个 `Watcher` 会调用 `pushTarget`，但是什么时候会实例化 `Watcher` 呢？1. 初始化 `initComputed`  2. 绑定 `$watch` 3. `mountComponent`。
 实际上是来自 `mountComponent` 内部的实例化 `Watcher`，我们看看代码
-https://github.com/wclimb/vue/blob/dev/src/core/instance/lifecycle.js#L137
+
+https://github.com/wclimb/vue/blob/dev/src/core/instance/lifecycle.js#L141
 
 ## mountComponent
 ```js
@@ -344,7 +345,7 @@ export function mountComponent (
 
 ## Wachter-订阅者
 
-https://github.com/wclimb/vue/blob/dev/src/core/observer/watcher.js#L22
+https://github.com/wclimb/vue/blob/dev/src/core/observer/watcher.js#L26
 ```js
 export default class Watcher {
 
@@ -518,7 +519,8 @@ export default class Dep {
 ```
 
 ### update
-https://github.com/wclimb/vue/blob/dev/src/core/observer/watcher.js#L153
+
+https://github.com/wclimb/vue/blob/dev/src/core/observer/watcher.js#L164
 ```js
 update () {
   /* istanbul ignore else */
@@ -533,7 +535,7 @@ update () {
 ```
 实际上大部分情况都会直接执行 `queueWatcher` 方法
 
-https://github.com/wclimb/vue/blob/dev/src/core/observer/scheduler.js#L98
+https://github.com/wclimb/vue/blob/dev/src/core/observer/scheduler.js#L164
 
 `queueWatcher`
 ```js
@@ -567,7 +569,7 @@ export function queueWatcher (watcher: Watcher) {
   }
 }
 ```
-https://github.com/wclimb/vue/blob/dev/src/core/observer/scheduler.js#L34
+https://github.com/wclimb/vue/blob/dev/src/core/observer/scheduler.js#L71
 
 `flushSchedulerQueue`
 ```js
