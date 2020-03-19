@@ -1,5 +1,5 @@
 ---
-title: 撸一个简易Virtual Dom
+title: 撸一个简易Virtual DOM
 date: 2020-03-19 10:47:52
 tags:
 - javascript
