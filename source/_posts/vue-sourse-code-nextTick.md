@@ -158,4 +158,4 @@ var vm = new Vue({
 今天带大家了解了一下 `nextTick` 的内部实现，虽然你也可以直接使用 `setTimeout` 去做，但是基于性能和执行顺序的问题(微任务执行快于宏任务)，推荐还是使用 `nextTick` 更好一点。
 
 
-本文地址 [撸一个简易Virtual Dom](http://www.wclimb.site/2020/03/19/simple-virtual-dom/)
+本文地址 [Vue源码之nextTick](http://www.wclimb.site/2020/03/19/simple-virtual-dom/)
