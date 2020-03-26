@@ -1,7 +1,24 @@
 .header { background: $head-bg; }
 
 .header-inner { position: relative; }
-
+.btn-copy {
+  display: inline-block;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-appearance: none;
+  font-size: 12px;
+  position: absolute;
+  right: 12px;
+  top: 6px;
+  color: hsla(0,0%,54.9%,.8);
+  transition: color .1s;
+}
+.btn-copy:hover{
+  color: #8c8c8c;
+}
 
 @import "headerband";
 @import "site-meta";

@@ -80,5 +80,11 @@
   {% include '_third-party/mathjax.swig' %}
   {% include '_third-party/scroll-cookie.swig' %}
   {% include '_third-party/exturl.swig' %}
+  <script src="https://cdn.bootcss.com/clipboard.js/2.0.6/clipboard.min.js"></script>
+  <style>
+  </style>
+  <script>
+    !function(){var initCopyCode=function(){var copyHtml='<div class="btn-copy" data-clipboard-snippet="">复制代码</div>';$(".highlight .code pre").before(copyHtml);var clipboard=new ClipboardJS(".btn-copy",{target:function(trigger){return trigger.nextElementSibling}});clipboard.on("success",function(e){e.clearSelection()})};initCopyCode()}();
+  </script>
 </body>
 </html>
