@@ -84,7 +84,7 @@
   <style>
   </style>
   <script>
-    !function(){var initCopyCode=function(){var copyHtml='<div class="btn-copy" data-clipboard-snippet="">复制代码</div>';$(".highlight .code pre").before(copyHtml);var clipboard=new ClipboardJS(".btn-copy",{target:function(trigger){return trigger.nextElementSibling}});clipboard.on("success",function(e){e.clearSelection()})};initCopyCode()}();
+    !function(){var initCopyCode=function(){var copyHtml='<div class="btn-copy" data-clipboard-snippet="">复制代码</div>';$(".highlight .code pre").before(copyHtml);var clipboard=new ClipboardJS(".btn-copy",{target:function(trigger){return trigger.nextElementSibling}});clipboard.on("success",function(e){e.clearSelection();e.trigger.innerHTML = '复制成功^_^';setTimeout(function(){e.trigger.innerHTML = '复制代码'},3000)})};initCopyCode()}();
   </script>
 </body>
 </html>

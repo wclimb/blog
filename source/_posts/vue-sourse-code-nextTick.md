@@ -105,7 +105,7 @@ export function nextTick (cb?: Function, ctx?: Object) {
 }
 ```
 我们可以看到 `Vue` 会借助 `timerFunc` 方法异步批量处理回调函数，`timerFunc` 可能是 `Promise.then`、`MutationObserver` 、 `setImmediate`、`setTimeout`。判断他们的支持程度，降级处理。
-如果没有传递回调函数会返回一个Promise，并把 `resolve` 方法赋值给 `_resolve`，这样我们 `this.$nextTick().then(callback)`，`callback`就会被触发了。至于为什么要使用timerFunc这种方式，开头已经讲了，是因为Vue是异步更新队列，这样做的好处是去除重复数据对于避免不必要的计算和 `DOM` 操作，比如我们操作一个数据，并且重复多次给他赋不一样的值，`this.a = 1;this.a = 2; this.a = 3`，答案结果最后自然是3，但是 `Vue` 不会去更新三次 `DOM` 或者数据，这样会造成不必要的浪费，所以需要做异步处理去 `update` 他们，既然更新是异步的，我们如果想直接马上获取最新的数据自然是不行的，需要借助nextTick，在下一次事件循环中去获取，可以看下面👇的代码
+如果没有传递回调函数会返回一个Promise，并把 `resolve` 方法赋值给 `_resolve`，这样我们 `this.$nextTick().then(callback)`，`callback`就会被触发了。至于为什么要使用 `timerFunc` 这种方式，开头已经讲了，是因为 `Vue` 是异步更新队列，这样做的好处是去除重复数据对于避免不必要的计算和 `DOM` 操作，比如我们操作一个数据，并且重复多次给他赋不一样的值，`this.a = 1;this.a = 2; this.a = 3`，答案结果最后自然是3，但是 `Vue` 不会去更新三次 `DOM` 或者数据，这样会造成不必要的浪费，所以需要做异步处理去 `update` 他们，既然更新是异步的，我们如果想直接马上获取最新的数据自然是不行的，需要借助 `nextTick`，在下一次事件循环中去获取，可以看下面👇的代码
 
 ## 实际代码
 
