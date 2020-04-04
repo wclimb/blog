@@ -203,6 +203,7 @@ links_title: Links
 #links_layout: block
 #links_layout: inline
 links:
+  Lsnsh: https://www.lsnsh.site/
   curtain Tan: http://blog.curtaintan.club
   eraylee: http://eraylee.com/
   flutter体验: https://dcdcdog.com
@@ -241,7 +242,7 @@ post_meta:
 post_wordcount:
   item_text: true
   wordcount: false
-  min2read: false
+  min2read: true
   separated_meta: true
 
 # Wechat Subscriber

@@ -4,8 +4,10 @@ date: 2019-04-19 15:38:40
 tags:
 - redis
 - Node
+- 教程
+- redis
 
-categories: [javascript,redis,node,教程]
+categories: [javascript]
 ---
 
 ## 前言

@@ -27,7 +27,7 @@ type: "about"
 ```js
 {
   name: 'wclimb',
-  age: 25, // +1 其实是拒绝的
+  age: 26, 
   gender: '男',
   Github: 'https://github.com/wclimb',
   blog: 'http://www.wclimb.site/',

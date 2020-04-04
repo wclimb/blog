@@ -9,7 +9,7 @@ tags:
 - javascript
 - 原创
 
-categories: [javascript,node,vue]
+categories: [javascript,node]
 ---
 
 # 写在前面
