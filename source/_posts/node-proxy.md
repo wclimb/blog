@@ -93,7 +93,7 @@ function ProxyServer(options) {
 }
 ```
 
-[源码地址](https://github.com/http-party/node-http-proxy/blob/master/lib/http-proxy/index.js#L726)
+[源码地址](https://github.com/http-party/node-http-proxy/blob/master/lib/http-proxy/index.js#L72)
 
 内部关键代码执行了一下这段，`passes` 是一个数组方法，包含`deleteLength`、`timeout`、`XHeaders`、`stream`，关键点在 `stream`，其他基本是辅助作用，`XHeaders` 功能是设置 `x-forwarded-*` 这种 `header`，不过前提是 `option` 配置了 `xfwd` 才行，`timeout` 是设置超时时间的，`deleteLength` 只有请求方法是 `OPTIONS` 和 `DELETE` 才会执行
 ```js
