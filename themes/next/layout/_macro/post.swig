@@ -221,12 +221,13 @@
                 </span>
               {% endif %}
 
-              {% if theme.post_wordcount.wordcount and theme.post_wordcount.min2read %}
+              <!-- if theme.post_wordcount.wordcount and theme.post_wordcount.min2read -->
+              {% if theme.post_wordcount.min2read %}
                 <span class="post-meta-divider">|</span>
               {% endif %}
 
               {% if theme.post_wordcount.min2read %}
-                <span class="post-meta-item-icon">
+                <span class="post-meta-item-icon" style="margin-left:4px;">
                   <i class="fa fa-clock-o"></i>
                 </span>
                 {% if theme.post_wordcount.item_text %}
