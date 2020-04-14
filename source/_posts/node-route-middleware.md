@@ -44,7 +44,7 @@ switch (pathname) {
     break;
 }
 ```
-
+<!-- more -->
 ## 实现路由
 
 我们按照 `RESTful` 风格来实现我们的路由，他们应该是这样的
