@@ -6,8 +6,6 @@ job1:
   script:
     - git clone --depth 1 https://gitee.com/wclimb/blog.git
     - cd blog
-    - cnpm i
-    - hexo g
     - cp -rf ./public/* /home/www/wclimb/
   only:
     - master
