@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Nodejs之实现路由和中间件]]></title>
+    <url>%2F2020%2F04%2F14%2Fnode-route-middleware%2F</url>
+    <content type="text"><![CDATA[前言今天来实现一个 node 的路由和中间件 铺垫我们首先起一个服务 12345678const http = require("http");const url = require("url");http .createServer(function(req, res) &#123; const pathname = url.parse(req.url).pathname; res.end(req.method.toLowerCase() + ": " + pathname); &#125;) .listen(3000); 访问 http://localhost:3000/ 显示 get: /访问 http://localhost:3000/test 显示 get: /test 最简单的方法就是下面代码判断逻辑，这样做的话太麻烦了，杂糅在一起了，还得进一步判断不同的请求方法，到底是 get 还是 post 还是其他的，重复代码也会增加123456789101112switch (pathname) &#123; case "/": res.end("root"); break; case "/test": res.end("test"); break; default: res.writeHead(404); res.end("404"); break;&#125; 实现路由我们按照 RESTful 风格来实现我们的路由，他们应该是这样的12345678route.get("/user", function(req, res) &#123;&#125;);route.post("/user", function(req, res) &#123;&#125;);route.delete("/user", function(req, res) &#123;&#125;);// 还可以是route.get("/:id", function(req, res) &#123;&#125;);route.get("/user/:pid/account", function(req, res) &#123;&#125;); 上面我们已经启动服务了，现在我们新建应该路由文件，就叫 router.js 吧，然后在上面👆的服务引入 const Router = require(&#39;./router&#39;); router.js12345678910111213141516const url = require("url");class Router &#123; constructor() &#123; this.route = &#123;&#125;; ["HEAD", "OPTIONS", "GET", "PUT", "PATCH", "POST", "DELETE"].forEach( method =&gt; &#123; method = method.toLowerCase(); this.route[method] = []; this[method] = function(path, ...stacks) &#123; this.route[method].push([path, [...stacks]]); &#125;; &#125; ); &#125;&#125;module.exports = Router; 他们的构造函数和大致的结构应该是这样的，当我们 new Router(); 初始化支持的路由方法，你会发现每当我们 route.get() 或者 route.post() 都会把他们存到对应的 route 对象数组内部，以便后续使用，这叫路由收集。那么问题来了，我都收集了，需要调用1234567891011121314const http = require("http");const url = require("url");+ const Router = require("./router");// 路由+ route.get("/user/:id", function(req, res) &#123;+ res.end("id");+ &#125;);http .createServer(function(req, res) &#123;+ route.install(req, res); &#125;) .listen(3000); 回到router.js123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051const url = require("url");class Router &#123; constructor() &#123; this.route = &#123;&#125;; ["HEAD", "OPTIONS", "GET", "PUT", "PATCH", "POST", "DELETE"].forEach( method =&gt; &#123; method = method.toLowerCase(); this.route[method] = []; this[method] = function(path, ...stacks) &#123; this.route[method].push([path, [...stacks]]); &#125;; &#125; ); &#125;+ install(req, res, app) &#123;+ const pathname = url.parse(req.url).pathname;+ const method = req.method.toLowerCase();+ if (this.route[method]) &#123;+ for (let i = 0; i &lt; this.route[method].length; i++) &#123;+ const [path, stacks] = this.route[method][i];+ const &#123; keys, regExp &#125; = this.pathRegexp(path);+ const mathed = regExp.exec(pathname);+ if (mathed) &#123;+ req.params = &#123;&#125;;+ for (let j = 0; j &lt; keys.length; j++) &#123;+ const key = keys[j];+ req.params[key] = mathed[j + 1];+ &#125;+ return app.handle(req, res, stacks);+ &#125;+ &#125;+ res.writeHead(404);+ res.end("404");+ &#125;else&#123;+ res.writeHead(404);+ res.end("404");+ &#125;+ &#125;+ pathRegexp(path) &#123;+ const keys = [];+ path = path.replace(/\/:(\w+)?(?:\/)?/g, function(match, key) &#123;+ keys.push(key);+ return `\\/([^\\/]+)(?:\\/)?`;+ &#125;);+ return &#123;+ keys,+ regExp: new RegExp(`^$&#123;path&#125;$`)+ &#125;;+ &#125;&#125;module.exports = Router; 你会发现多了两个方法install，pathRegexp。install是用来注册路由的，首先拿到请求方法和路径，然后去之前收集的路由查找是否存在这个路由，如果不存在直接返回404，如果存在会调用 pathRegexp 做路径匹配，因为可能会有 /:id、 /user，这种不同的路由，这里借鉴一下 koa-router 获取参数的方式，比如我们路由是 /:id/test/:p，当我们访问 /123/test/456的时候，我们可以拿到一个对象params: {id:123,p:456}。其实 koa-router 的路由匹配规则用的是 path-to-regexp 这个包，我们这里是自己做得匹配，可以思考一下 pathRegexp 方法的实现。如果发现匹配，我们会把params赋值到req对象上，然后调用执行中间件的操作，也就是 app.handle(req, res, stacks);，你会发现上面我们注册的时候压根就没有传递app，因为这是后面需要将的内容，实现中间件 顺便说一下，如果你想让上面的代码正常执行，把 app.handle() 这行代码去掉，然后 res.end() 就可以正常执行了 中间件中间件其实就是洋葱模型了，先收集中间件的依赖，然后去递归一个个执行中间件，感兴趣可以去看看我直接写的Koa源码系列之koa-compose 中间件我们希望他是这么注册收集的12345app.use(cookie);app.use(function(req, res, next) &#123; req.query = url.parse(req.url, true).query; next();&#125;); 新建文件middleware.js，内容如下12345678910111213141516171819202122232425262728293031const url = require("url");class MiddleWare &#123; constructor() &#123; this.aloneMiddleWare = &#123;&#125;; this.commonMiddleWare = []; &#125; use(middleWare) &#123; if (typeof middleWare === "string") &#123; this.aloneMiddleWare[middleWare] = arguments[1]; &#125; else &#123; this.commonMiddleWare.push(middleWare); &#125; &#125; handle(req, res, stacks) &#123; const pathname = url.parse(req.url).pathname; const middleWareList = [ ...this.commonMiddleWare, ...(this.aloneMiddleWare[pathname] ? this.aloneMiddleWare[pathname] : []), ...stacks ]; const next = function() &#123; const middleWare = middleWareList.shift(); if (middleWare) &#123; middleWare(req, res, next); &#125; &#125;; next(); &#125;&#125;module.exports = new MiddleWare(); aloneMiddleWare 先不看，use方法是进行依赖收集的，handle方法是集中处理中间件的方法，递归调用，依次执行。关键代码1234567const next = function() &#123; const middleWare = middleWareList.shift(); if (middleWare) &#123; middleWare(req, res, next); &#125;&#125;;next(); 每次取出队列里的第一个，然后执行它，然后把 next 方法传递一下，所以我们必须在中间件内部调用 next 方法，不然流程会中断。 我们刚刚说的 aloneMiddleWare 有上面用的呢，其实是为了优化性能，因为有的中间件不是所有路由都使用到的，可能就一个路由用到了，那么如果我们把它注册在全局，那么所有的路由都会走一遍。所以这里做个优化，中间件支持如下注册方式，这样就只有 /alone 这个路由会走这个中间件，上面的存取使用 this.aloneMiddleWare[middleWare]; 可能不严谨，最好做注册匹配，这里主要是提供思路1app('/alone', middleware) 这样之前的 router.js 内的 app.handle 方法就可以执行了，然后依次执行中间件，最后才执行路由上面写得回调方法 另外还执行以下方法传递中间件123route.get("/user/:id", middleware1, middleware2, function(req, res) &#123; res.end("id");&#125;); 嗯，现在大致完成了功能，但是呢，好像我们可以把上一篇写的模版引擎拿过来，借鉴一下 koa-views 方法，使用 ctx.render(file,{}) 渲染模版 支持模版引擎新建文件render.js12345678910111213141516171819202122232425262728293031323334353637const fs = require("fs");const render = function(file, data) &#123; let str = fs.readFileSync(`$&#123;file&#125;.ejs`, "utf8"); const escape = function(html) &#123; return String(html) .replace(/&amp;(?!\w+;)/g, "&amp;amp;") .replace(/&lt;/g, "&amp;lt;") .replace(/&gt;/g, "&amp;gt;") .replace(/"/g, "&amp;quot;") .replace(/'/g, "&amp;#039;"); // IE下不支持&amp;apos;(单引号)转义 &#125;; str = str .replace(/\n/g, "") .replace(/\s&#123;2,&#125;/g, "") .replace(/&lt;%-([\S\s]+?)%&gt;/g, function(match, val) &#123; return `'+ $&#123;val&#125; +'`; &#125;) .replace(/&lt;%=([\S\s]+?)%&gt;/g, function(match, val) &#123; return `'+ escape($&#123;val&#125;) +'`; &#125;) .replace(/&lt;%([\S\s]+?)%&gt;/g, function(match, val) &#123; return `';\n$&#123;val&#125;\ntpl +='`; &#125;); str = `let tpl = '$&#123;str&#125;';return tpl;`; str = `with(option)&#123;$&#123;str&#125;;return tpl;&#125;`; const complied = new Function("option", str); let result; try &#123; result = complied(data); &#125; catch (error) &#123; console.log(error); &#125; return result;&#125;;module.exports = render; 写一个支持模版引擎的中间件12345678app.use(function(req, res, next) &#123; res.render = function(file, data) &#123; let template = render(file, data); res.writeHead(200, &#123; "Content-Type": "text/html;charset=utf8" &#125;); res.end(template); &#125;; next();&#125;); 使用123456app.get("/user/:id", function(req, res) &#123; const obj = &#123; items: [&#123; name: "123" &#125;, &#123; name: "wclimb" &#125;], &#125;; res.render("template", obj);&#125;); template 是 template.ejs文件，当然得有 template.ejs123456789101112131415161718192021&lt;!DOCTYPE html&gt;&lt;html lang="en"&gt; &lt;head&gt; &lt;meta charset="UTF-8" /&gt; &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt; &lt;title&gt;Document&lt;/title&gt; &lt;/head&gt; &lt;body&gt; &lt;% for (var i = 0; i &lt; items.length; i++) &#123; %&gt; &lt;% var item = items[i];%&gt; &lt;p&gt;&lt;%= (i+1) %&gt;、&lt;%-item.name%&gt;&lt;/p&gt; &lt;% &#125; %&gt; &lt;div&gt;测试一下&lt;/div&gt; &lt;% if (user) &#123; %&gt; &lt;h2&gt;&lt;%=user.name%&gt;&lt;/h2&gt; &lt;% &#125; else &#123; %&gt; &lt;h2&gt;匿名用户&lt;/h2&gt; &lt;% &#125; %&gt; &lt;/body&gt;&lt;/html&gt; 结尾至此，我们实现了路由、中间件、模版引擎，完整流程串起来可以方便我们写一些 demo 了，额，但是别在生产环境使用，不保证代码的健壮。当然我也相信你绝对不会上生产，因为这就是个 demo，其实那么框架也是这么一步步搭建起来的，原理思想差不多 以上代码已经上传到Github：https://github.com/wclimb/router-middleware Reference 深入浅出nodejs 本文地址 Nodejs之实现路由和中间件]]></content>
+      <categories>
+        <category>Node</category>
+        <category>模版引擎</category>
+      </categories>
+      <tags>
+        <tag>javascript</tag>
+        <tag>原创</tag>
+        <tag>Node</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Nodejs之实现一个模版引擎]]></title>
     <url>%2F2020%2F04%2F14%2Fnode-template%2F</url>
     <content type="text"><![CDATA[前言最近看完了朴大的 《深入浅出nodejs》 这本书，在里面学到了许多，也推荐大家可以去看一下，看完感觉可以写几篇文章记录总结一下，提升一下印象，毕竟学到的东西感觉不记下来过不久就容易忘记，大家也要养成学习记录的习惯，方便以后重温，今天来实现一个 node 的模版引擎，当然这个模版引擎在前端也可以用。 借鉴ejs标签标签借鉴 ejs，用过的同学肯定知道，例如使用 &lt;%= name %&gt; 这种标签来展示数据，使用 &lt;% if(name){ %&gt; 这种标签来做 js 操作，如 if 判断/ for循环，比如下面12345&lt;% if (name) &#123; %&gt; &lt;h1&gt;&lt;%=name%&gt;&lt;/h1&gt;&lt;% &#125; else &#123; %&gt; &lt;h1&gt;请登陆&lt;/h1&gt;&lt;% &#125; %&gt; 渲染方法我们先来看个简单的渲染1let str = 'hello &lt;%=name%&gt;' 假如我们的有一个字段 name = &#39;wclimb&#39;;12345const name = 'wclimb';let str = 'hello &lt;%=name%&gt;';str.replace(/&lt;%=([\S\s]+?)%&gt;/g, function(match,value)&#123; return name&#125;) 结果1hello wclimb 按照这个思路就很简单了，我们先来思考🤔一个问题，数据渲染简单，直接替换就可以来了，那么 js 的逻辑判断这种怎么处理呢，我们拿到的都是字符串，这里需要借助 Function 来实现，具体渲染成如下样式123456let tpl = '';if (name)&#123; tpl += '&lt;h1&gt;' + name ' +&lt;/h1&gt;'&#125;else&#123; tpl += '&lt;h1&gt;请登陆&lt;/h1&gt;'&#125; 然后使用 new Function ,123const complied = new Function('name',tpl); const result = complied()console.log(result) 直接上代码12345678910111213141516171819202122const render = function(str, data) &#123; str = str .replace(/\n/g, "") .replace(/\s&#123;2,&#125;/g, "") .replace(/&lt;%=([\S\s]+?)%&gt;/g, function(match, val) &#123; return `'+ $&#123;val&#125; +'`; &#125;) .replace(/&lt;%([\S\s]+?)%&gt;/g, function(match, val) &#123; return `';\n$&#123;val&#125;\ntpl +='`; &#125;); str = `let tpl = '$&#123;str&#125;';return tpl;`; str = `with(option)&#123;$&#123;str&#125;;return tpl;&#125;`; const complied = new Function("option", str); let result; try &#123; result = complied(data); &#125; catch (error) &#123; console.log(error); &#125; return result;&#125;; 看着整个代码感觉没什么，等等，with 是什么？知道的同学可以忽略后面的，with 的作用就是通常我们取数据都是 let people = obj.name +&#39;-&#39;+ obj.age 这样，每次都需要拿 obj，为了简化我们可以这样写：12345const obj = &#123;name:'wclimb', age: 26&#125;let peoplewith(obj)&#123; people = name +'-'+ age&#125; 但是不推荐用 with，容易引起作用域混乱，但是我看 Vue 源码也用到了，还是谨慎一点。比如如下：123with (obj) &#123; foo = bar;&#125; 它的结果有可能是如下四种之一: obj.foo = obj.bar;、obj.foo = bar;、foo = bar;、foo = obj.bar;，这些结果取决于它的作用域。如果作用域链上没有导致冲突的变量存在，使用它则是 安全的。但在多人合作的项目中，这并不容易保证，所以要慎用 with xss攻击我们需要时刻关注安全，在上面的模版上，如果 name 是 &lt;script&gt;alert(&#39;xss攻击&#39;)&lt;/script&gt;，那么我们渲染到页面上100%会显示一个弹窗，很危险。因此我们需要对尖括号进行转义，我们单独写一个方法处理 12345678const escape = function(html) &#123; return String(html) .replace(/&amp;(?!\w+;)/g, "&amp;amp;") .replace(/&lt;/g, "&amp;lt;") .replace(/&gt;/g, "&amp;gt;") .replace(/"/g, "&amp;quot;") .replace(/'/g, "&amp;#039;"); // IE下不支持&amp;apos;(单引号)转义 &#125;; 当然，并不是所有的都需要转义，比如我就是想让他输出有格式的标签 &lt;h1&gt;h1&lt;/h1&gt;，所以我们需要提供两种不同的标签，ejs 就提供了,如下123456&lt;%= name %&gt; 会转义&lt;%- name %&gt; 原始输出如果输入&lt;h1&gt;h1&lt;/h1&gt;，他们的对应结果是&lt;%= name %&gt; &lt;h1&gt;h1&lt;/h1&gt;&lt;%- name %&gt; 有格式的 h1 然后完善一下123456789101112131415161718192021222324252627282930313233const render = function(str, data) &#123;+ const escape = function(html) &#123;+ return String(html)+ .replace(/&amp;(?!\w+;)/g, "&amp;amp;")+ .replace(/&lt;/g, "&amp;lt;")+ .replace(/&gt;/g, "&amp;gt;")+ .replace(/"/g, "&amp;quot;")+ .replace(/'/g, "&amp;#039;"); // IE下不支持&amp;apos;(单引号)转义+ &#125;; str = str .replace(/\n/g, "") .replace(/\s&#123;2,&#125;/g, "") .replace(/&lt;%-([\S\s]+?)%&gt;/g, function(match, val) &#123; return `'+ $&#123;val&#125; +'`; &#125;)+ .replace(/&lt;%=([\S\s]+?)%&gt;/g, function(match, val) &#123;+ return `'+ escape($&#123;val&#125;) +'`;+ &#125;) .replace(/&lt;%([\S\s]+?)%&gt;/g, function(match, val) &#123; return `';\n$&#123;val&#125;\ntpl +='`; &#125;); str = `let tpl = '$&#123;str&#125;';return tpl;`; str = `with(option)&#123;$&#123;str&#125;;return tpl;&#125;`; const complied = new Function("option", str); let result; try &#123; result = complied(data); &#125; catch (error) &#123; console.log(error); &#125; return result;&#125;; 测试123456const str = ` &lt;% for (var i = 0; i &lt; users.length; i++) &#123; %&gt; &lt;% var item = users[i];%&gt; &lt;p&gt;&lt;%= (i+1) %&gt;、&lt;%-item.name%&gt;&lt;/p&gt; &lt;% &#125; %&gt;`;const result = render(str, &#123;users: [&#123; name: "wclimb" &#125;, &#123; name: "other" &#125;]&#125;); 结果1&lt;p&gt;1、wclimb&lt;/p&gt;&lt;p&gt;2、other&lt;/p&gt; 上面可能不好复制，下面是完整代码123456789101112131415161718192021222324252627282930313233const render = function(str, data) &#123; const escape = function(html) &#123; return String(html) .replace(/&amp;(?!\w+;)/g, "&amp;amp;") .replace(/&lt;/g, "&amp;lt;") .replace(/&gt;/g, "&amp;gt;") .replace(/"/g, "&amp;quot;") .replace(/'/g, "&amp;#039;"); // IE下不支持&amp;apos;(单引号)转义 &#125;; str = str .replace(/\n/g, "") .replace(/\s&#123;2,&#125;/g, "") .replace(/&lt;%-([\S\s]+?)%&gt;/g, function(match, val) &#123; return `'+ $&#123;val&#125; +'`; &#125;) .replace(/&lt;%=([\S\s]+?)%&gt;/g, function(match, val) &#123; return `'+ escape($&#123;val&#125;) +'`; &#125;) .replace(/&lt;%([\S\s]+?)%&gt;/g, function(match, val) &#123; return `';\n$&#123;val&#125;\ntpl +='`; &#125;); str = `let tpl = '$&#123;str&#125;';return tpl;`; str = `with(option)&#123;$&#123;str&#125;;return tpl;&#125;`; const complied = new Function("option", str); let result; try &#123; result = complied(data); &#125; catch (error) &#123; console.log(error); &#125; return result;&#125;; 使用文件模版我们可以新建一个模版 test.ejs 文件，内容为之前的测试内容1render(fs.readFileSync(`test.ejs`, "utf8") ,&#123;users: [&#123; name: "wclimb" &#125;, &#123; name: "other" &#125;]&#125;); 结尾一个模版引擎就完成了，挺简单的，说得有点多了，下一篇带大家实现一个路由和中间件 Reference 深入浅出nodejs 本文地址 Nodejs之实现一个模版引擎]]></content>
@@ -9,8 +23,8 @@
         <category>模版引擎</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
         <tag>Node</tag>
       </tags>
   </entry>
@@ -23,8 +37,8 @@
         <category>代理</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
         <tag>Node</tag>
       </tags>
   </entry>
@@ -37,8 +51,8 @@
         <category>vue</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
         <tag>vue</tag>
         <tag>源码</tag>
       </tags>
@@ -52,8 +66,8 @@
         <category>vue</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
         <tag>vue</tag>
         <tag>源码</tag>
       </tags>
@@ -67,8 +81,8 @@
         <category>vue</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
         <tag>vue</tag>
         <tag>源码</tag>
       </tags>
@@ -82,8 +96,8 @@
         <category>vue</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
         <tag>vue</tag>
         <tag>源码</tag>
       </tags>
@@ -97,8 +111,8 @@
         <category>node</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
         <tag>node</tag>
       </tags>
   </entry>
@@ -111,8 +125,8 @@
         <category>Koa</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
         <tag>Koa</tag>
       </tags>
   </entry>
@@ -125,8 +139,8 @@
         <category>Koa</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
         <tag>Koa</tag>
       </tags>
   </entry>
@@ -139,8 +153,8 @@
         <category>Koa</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
         <tag>Koa</tag>
       </tags>
   </entry>
@@ -180,8 +194,8 @@
         <category>vue</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
         <tag>vue</tag>
         <tag>源码</tag>
       </tags>
@@ -195,8 +209,8 @@
         <category>webpack</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
         <tag>webpack</tag>
       </tags>
   </entry>
@@ -209,8 +223,8 @@
         <category>webpack</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
         <tag>webpack</tag>
       </tags>
   </entry>
@@ -223,8 +237,8 @@
         <category>webpack</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
         <tag>webpack</tag>
       </tags>
   </entry>
@@ -237,8 +251,8 @@
         <category>webpack</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
         <tag>webpack</tag>
       </tags>
   </entry>
@@ -264,8 +278,8 @@
         <category>vue</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
       </tags>
   </entry>
   <entry>
@@ -276,8 +290,8 @@
         <category>javascript</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
       </tags>
   </entry>
   <entry>
@@ -289,8 +303,8 @@
         <category>promise</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
       </tags>
   </entry>
   <entry>
@@ -301,8 +315,8 @@
         <category>javascript</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
       </tags>
   </entry>
   <entry>
@@ -315,8 +329,8 @@
         <category>教程</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
         <tag>Node</tag>
       </tags>
   </entry>
@@ -328,8 +342,8 @@
         <category>javascript</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
       </tags>
   </entry>
   <entry>
@@ -340,8 +354,8 @@
         <category>javascript</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
       </tags>
   </entry>
   <entry>
@@ -352,8 +366,8 @@
         <category>javascript</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
       </tags>
   </entry>
   <entry>
@@ -365,11 +379,11 @@
         <category>HTTP</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>HTTP</tag>
         <tag>缓存</tag>
         <tag>Mysql</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
       </tags>
   </entry>
   <entry>
@@ -383,8 +397,8 @@
         <category>egg</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
         <tag>Node</tag>
         <tag>Egg</tag>
       </tags>
@@ -398,9 +412,9 @@
         <category>node</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>Mysql</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
         <tag>Koa</tag>
         <tag>Node</tag>
         <tag>Vue</tag>
@@ -421,8 +435,8 @@
     <url>%2F2017%2F07%2F18%2F%E8%AF%BBzepto%E6%BA%90%E7%A0%81%EF%BC%8C%E5%B0%81%E8%A3%85%E8%87%AA%E5%B7%B1%E7%9A%84zepto%E5%BA%93-%EF%BC%88%E4%B8%89%EF%BC%89%2F</url>
     <content type="text"><![CDATA[本篇着重讲选择器$()选择器本例我们主要修改wclimb.init=function(selector){}里面的代码将wclimb.init代码修改为：1234567891011121314151617181920var domif (!selector) return wclimb.Z()else if (typeof selector == 'string') &#123; dom = wclimb.qsa(document, selector)&#125;else if (typeof selector == 'function')&#123; return wclimb.ready(selector)&#125;else&#123; if (isArray(selector)) &#123; dom = compact(selector) &#125; else if (wclimb.isZ(selector)) return selector else&#123; if (isObject(selector)) dom = [selector], selector = null ; else dom=wclimb.qsa(document,selector) &#125;&#125;return wclimb.Z(dom, selector) 首先判断是否存在selector，如果不存在则直接return 然后判断是否是字符串类型，如$(&#39;a b&#39;)，将选择的元素保存起来 如果是函数则return wclimb.ready(selector)就是我们经常用的$(function(){}) 后面判断是否是当前对象的实例（用了isZ方法）还有判断是否是数组或对象 我们先在函数顶部添加如下123emptyArray = [], concat = emptyArray.concat, filter = emptyArray.filterslice = emptyArray.slicefunction compact(array) &#123; return filter.call(array, function(item)&#123; return item != null &#125;) &#125; emptyArray = []，避免出现每次都重复创建的一个数组[]然后拿到数组里面的方法compact就是一个数组筛选，如果某个元素不存在$([1,2,,,4]);只会创建一个[1,2,4]的数组 wclimb.qsa方法1234567891011121314151617wclimb.qsa=function(element, selector)&#123; var found, maybeID = selector[0] == '#', maybeClass = !maybeID &amp;&amp; selector[0] == '.', nameOnly = maybeID || maybeClass ? selector.slice(1) : selector, // Ensure that a 1 char tag name still gets checked isSimple = /^[\w-]*$/.test(nameOnly) return (element.getElementById &amp;&amp; isSimple &amp;&amp; maybeID) ? // Safari DocumentFragment doesn't have getElementById ( (found = element.getElementById(nameOnly)) ? [found] : [] ) : (element.nodeType !== 1 &amp;&amp; element.nodeType !== 9 &amp;&amp; element.nodeType !== 11) ? [] : slice.call( isSimple &amp;&amp; !maybeID &amp;&amp; element.getElementsByClassName ? // DocumentFragment doesn't have getElementsByClassName/TagName maybeClass ? element.getElementsByClassName(nameOnly) : // If it's simple, it could be a class element.getElementsByTagName(selector) : // Or a tag element.querySelectorAll(selector) // Or it's not simple, and we need to query all )&#125; 这里我直接用了zepto的代码wclimb.init=function(selector){}里的代码还使用了判断数据类型的代码isArray`isObject` 判断数据类型在函数外面添加如下代码来进行数据类型判断 123456789101112// 判断类型var obj_i=&#123;&#125;;['Boolean', 'Number','String', 'Function', 'Array' ,'Date', 'RegExp', 'Object' ,'Error'].forEach(function(el,idx)&#123; obj_i["[object " + el + "]"] = el.toLowerCase()&#125;)function type(obj) &#123; return obj == null ? String(obj) : obj_i[Object.prototype.toString.call(obj)] || "object"&#125;function isObject(obj) &#123; return type(obj) == "object" &#125; function isArray(obj) &#123; return type(obj) == "array" &#125;function isString(obj) &#123; return type(obj) == "string" &#125; wclimb.ready函数在外面设置如下函数123456wclimb.ready = function(fn) &#123; document.addEventListener('DOMContentLoaded',function() &#123; fn &amp;&amp; fn(); &#125;,false); document.removeEventListener('DOMContentLoaded',fn,true);&#125;; wclimb.isZ函数下面代码判断object是不是wclimb.Z的实例123wclimb.isZ = function(object) &#123; return object instanceof wclimb.Z&#125; 现在试试代码吧，我们顺便把addClass里判断hasClass代码注释去掉了 123456789101112&lt;script&gt; // ready $(function()&#123; alert(1) &#125;) // addClass $('p').addClass('a b') // 实例 console.log($(this)) // 数组 $([1,23,3,,4])&lt;/script&gt; 全部代码123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899100101102103104105106107108109110111112113114115116117118119120121122123124125126127128129130131(function()&#123; var wclimb = &#123;&#125;,$ emptyArray = [], concat = emptyArray.concat, filter = emptyArray.filter slice = emptyArray.slice function compact(array) &#123; return filter.call(array, function(item)&#123; return item != null &#125;) &#125; $ = function(selector)&#123; return wclimb.init(selector) &#125; wclimb.init = function(selector)&#123; var dom if (!selector) return wclimb.Z() else if (typeof selector == 'string') &#123; dom = wclimb.qsa(document, selector) &#125; else if (typeof selector == 'function')&#123; return wclimb.ready(selector) &#125; else&#123; if (isArray(selector)) &#123; dom = compact(selector) &#125; else if (wclimb.isZ(selector)) return selector else&#123; if (isObject(selector)) dom = [selector], selector = null ; else dom=wclimb.qsa(document,selector) &#125; &#125; return wclimb.Z(dom, selector) &#125; wclimb.Z = function(dom,selector)&#123; return new Z(dom,selector) &#125; function className(node, value)&#123; var klass = node.className || '' if (value === undefined) return klass node.className = value &#125; wclimb.Z.prototype = Z.prototype = &#123; each:function(callback)&#123; [].every.call(this, function(el, idx)&#123; return callback.call(el, idx, el) !== false &#125;) return this; &#125;, addClass:function(name)&#123; if (!name) return this return this.each(function(el,idx)&#123; if (!('className' in this)) return classList = []; var cls = className(this) name.split(/\s+/g).forEach(function(klass)&#123; if (!$(this).hasClass(klass)) classList.push(klass) &#125;, this) classList.length &amp;&amp; className(this, cls + (cls ? " " : "") + classList.join(" ")) &#125;) &#125;, hasClass : function(cls) &#123; var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)'); for (var i = 0; i &lt; this.length; i++) &#123; if (this[i].className.match(reg)) return true; return false; &#125; return this; &#125; &#125; wclimb.ready = function(fn) &#123; document.addEventListener('DOMContentLoaded',function() &#123; fn &amp;&amp; fn(); &#125;,false); document.removeEventListener('DOMContentLoaded',fn,true); &#125;; wclimb.qsa=function(element, selector)&#123; var found, maybeID = selector[0] == '#', maybeClass = !maybeID &amp;&amp; selector[0] == '.', nameOnly = maybeID || maybeClass ? selector.slice(1) : selector, // Ensure that a 1 char tag name still gets checked isSimple = /^[\w-]*$/.test(nameOnly) return (element.getElementById &amp;&amp; isSimple &amp;&amp; maybeID) ? // Safari DocumentFragment doesn't have getElementById ( (found = element.getElementById(nameOnly)) ? [found] : [] ) : (element.nodeType !== 1 &amp;&amp; element.nodeType !== 9 &amp;&amp; element.nodeType !== 11) ? [] : slice.call( isSimple &amp;&amp; !maybeID &amp;&amp; element.getElementsByClassName ? // DocumentFragment doesn't have getElementsByClassName/TagName maybeClass ? element.getElementsByClassName(nameOnly) : // If it's simple, it could be a class element.getElementsByTagName(selector) : // Or a tag element.querySelectorAll(selector) // Or it's not simple, and we need to query all ) &#125; function Z(dom,selector) &#123; for (var i = 0; i &lt; dom.length; i++) &#123; this[i] = dom[i] &#125; this.selector = selector; this.length = dom.length &#125; wclimb.isZ = function(object) &#123; return object instanceof wclimb.Z &#125; // 判断类型 var obj_i=&#123;&#125;; ['Boolean', 'Number','String', 'Function', 'Array' ,'Date', 'RegExp', 'Object' ,'Error'].forEach(function(el,idx)&#123; obj_i["[object " + el + "]"] = el.toLowerCase() &#125;) function type(obj) &#123; return obj == null ? String(obj) : obj_i[Object.prototype.toString.call(obj)] || "object" &#125; function isObject(obj) &#123; return type(obj) == "object" &#125; function isArray(obj) &#123; return type(obj) == "array" &#125; function isString(obj) &#123; return type(obj) == "string" &#125; window.$ = window.wclimb = $&#125;)()]]></content>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
         <tag>zepto</tag>
       </tags>
   </entry>
@@ -431,8 +445,8 @@
     <url>%2F2017%2F07%2F17%2F%E8%AF%BBzepto%E6%BA%90%E7%A0%81%EF%BC%8C%E5%B0%81%E8%A3%85%E8%87%AA%E5%B7%B1%E7%9A%84zepto%E5%BA%93%EF%BC%88%E4%BA%8C%EF%BC%89%2F</url>
     <content type="text"><![CDATA[距离上一篇zepto源码分析已经过去大半个月，想想自己都过意不去，不过之前分享了一篇node博客教程，还算干了点正事。接下来我们继续封装自己的库吧 上节代码概览12345678910111213141516171819202122232425262728293031323334(function()&#123; var wclimb = &#123;&#125;,$ $ = function(selector)&#123; return wclimb.init(selector) &#125; wclimb.init = function(selector)&#123; var dom; dom = document.querySelectorAll(selector); return wclimb.Z(dom,selector) &#125; wclimb.Z = function(dom,selector)&#123; return new Z(dom,selector) &#125; wclimb.Z.prototype = Z.prototype = &#123; test:function()&#123; alert(1) &#125; &#125; function Z(dom,selector) &#123; for (var i = 0; i &lt; dom.length; i++) &#123; this[i] = dom[i] &#125; this.selector = selector; this.length = dom.length &#125; window.$ = window.wclimb = $&#125;)() each方法 在wclimb.Z.prototype=Z.prototype=里面添加方法each 12345678wclimb.Z.prototype = Z.prototype = &#123; each:function(callback)&#123; [].every.call(this, function(el, idx)&#123; return callback.call(el, idx, el) !== false &#125;) return this; &#125;&#125; 通过数组的every方法进行遍历，然后看看每次callback是不是都不是false，如果是则结束遍历 最后通过 return this 来达到链式调用的效果 addClass方法继续在里面添加addClass方法 123456789101112131415161718addClass:function(name)&#123; if (!name) return this return this.each(function(el,idx)&#123; if (!('className' in this)) return classList = []; var cls = className(this) // newName = funcArg(this, name, idx, cls) name.split(/\s+/g).forEach(function(klass)&#123; // if (!$(this).hasClass(klass)) classList.push(klass) &#125;, this) classList.length &amp;&amp; className(this, cls + (cls ? " " : "") + classList.join(" ")) &#125;)&#125; 我们先判断name存在与否，没有就直接return this，支持链式调用 新建一个数组，存放我们要添加的class，因为可能要同时添加多个 通过调用className方法来获取之前的class，并保存起来。clasName方法在下面 我们添加class一般是这样addClass(&#39;a b c&#39;)，所以我们通过正则表达式把他们用空格分开/\s+/g,用+的原因是，可能会有多个空格的存在，接着对他们进行循环 通过hasClass判断之前是否已经存在需要添加的class，如果有就push到classList数组里面。我们先注释掉hasClass这段代码，因为其中用到了$(this) ,querySelector是不支持的哟，所以后面我们得作判断，判断$()这里面放的是元素、函数、类数组等等。 最后通过函数className方法把他们用空格连接起来 发现里面有一个没有声明的className方法所以我们在wclimb.Z.prototype=Z.prototype=上面声明该函数1234567//获取或者设置classfunction className(node, value)&#123; var klass = node.className || '' if (value === undefined) return klass node.className = value&#125; 该方法主要是获取class和设置class的作用 hasClass方法12345678hasClass : function(cls) &#123; var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)'); for (var i = 0; i &lt; this.length; i++) &#123; if (this[i].className.match(reg)) return true; return false; &#125; return this;&#125; 通过正则匹配，如果存在则返回true，否则返回false，最后return this支持链式调用 现在来试试效果吧12345html: &lt;p class="a"&gt;&lt;/p&gt;js: $('p').addClass('test other') // &lt;p class="a test other"&gt;&lt;/p&gt; console.log($('p').hasClass('a')) // true 代码12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273(function()&#123; var wclimb = &#123;&#125;,$ $ = function(selector)&#123; return wclimb.init(selector) &#125; wclimb.init = function(selector)&#123; var dom; dom = document.querySelectorAll(selector); return wclimb.Z(dom,selector) &#125; wclimb.Z = function(dom,selector)&#123; return new Z(dom,selector) &#125; function className(node, value)&#123;//获取或者设置class var klass = node.className || '' if (value === undefined) return klass node.className = value &#125; wclimb.Z.prototype = Z.prototype = &#123; each:function(callback)&#123; [].every.call(this, function(el, idx)&#123; return callback.call(el, idx, el) !== false &#125;) return this; &#125;, addClass:function(name)&#123; if (!name) return this return this.each(function(el,idx)&#123; if (!('className' in this)) return classList = []; var cls = className(this) name.split(/\s+/g).forEach(function(klass)&#123; // if (!$(this).hasClass(klass)) classList.push(klass) &#125;, this) classList.length &amp;&amp; className(this, cls + (cls ? " " : "") + classList.join(" ")) &#125;) &#125;, hasClass : function(cls) &#123; var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)'); for (var i = 0; i &lt; this.length; i++) &#123; if (this[i].className.match(reg)) return true; return false; &#125; return this; &#125; &#125; function Z(dom,selector) &#123; for (var i = 0; i &lt; dom.length; i++) &#123; this[i] = dom[i] &#125; this.selector = selector; this.length = dom.length &#125; window.$ = window.wclimb = $&#125;)()]]></content>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
         <tag>zepto</tag>
       </tags>
   </entry>
@@ -445,9 +459,9 @@
         <category>node</category>
       </categories>
       <tags>
-        <tag>原创</tag>
         <tag>Mysql</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
         <tag>Koa</tag>
         <tag>Node</tag>
       </tags>
@@ -457,8 +471,8 @@
     <url>%2F2017%2F06%2F29%2F%E8%AF%BBzepto%E6%BA%90%E7%A0%81%EF%BC%8C%E5%B0%81%E8%A3%85%E8%87%AA%E5%B7%B1%E7%9A%84zepto%E5%BA%93%EF%BC%88%E4%B8%80%EF%BC%89%2F</url>
     <content type="text"><![CDATA[写在前面 读zepto源码，封装自己的zepto库系列是自己在读zepto源码的一些理解，有错误的地方还望指出。如果觉得本系列对你有所帮助，还请持续关注wclimb，谢谢。 zepto的整体架构首先来看看整体代码结构 123456789101112131415161718192021222324252627282930313233(function()&#123; var wclimb = &#123;&#125;,$ $ = function(selector)&#123; return wclimb.init(selector) &#125; wclimb.init = function(selector)&#123; var dom; dom = document.querySelectorAll(selector); return wclimb.Z(dom,selector) &#125; wclimb.Z = function(dom,selector)&#123; return new Z(dom,selector) &#125; wclimb.Z.prototype = Z.prototype = &#123; test:function()&#123; alert(1) &#125; &#125; function Z(dom,selector) &#123; for (var i = 0; i &lt; dom.length; i++) &#123; this[i] = dom[i] &#125; this.selector = selector; this.length = dom.length &#125; window.$ = window.wclimb = $&#125;)() 首先我们设置了一个闭包，避免产生全局变量123(function()&#123; ...&#125;)() 我们定义一个对象wclimb和$，以便后面使用 1var wclimb = &#123;&#125;,$ $函数返回了wclimb.init(selector),我们知道使用zepto的时候，一般是$(‘p’)，而selector就是p元素，当然不止这一种情况如$(function(){}),所以对选择器后面我们要做判断123$ = function(selector)&#123; return wclimb.init(selector)&#125; 而wclimb.init首先定义了一个dom，通过选择器选取的元素赋值给dom，最后返回wclimb.init，传入dom和选择元素selector 12345wclimb.init = function(selector)&#123; var dom; dom = document.querySelector(selector); return wclimb.Z(dom,selector)&#125; 我们可以看到之前我们定义了对象wclimb，而后我们就往里面添加了一些方法，就像： 12345678910wclimb = &#123; init：function(selector)&#123; var dom; dom = document.querySelector(selector); return wclimb.Z(dom,selector) &#125;, Z: function(dom,selector)&#123; return new Z(dom,selector) &#125;&#125; 通过wclimb.Z，如果有看过zepto源码的同学应该对此有了解.每次用$调用的时候,将直接返回一个Z的实例.达到无new调用的效果,$(‘p’)返回一个实例，然后$(‘p’).test()调用他的原形方法，这里的方法是test 1234567891011wclimb.Z = function(dom,selector)&#123; return new Z(dom,selector)&#125;function Z(dom,selector) &#123; for (var i = 0; i &lt; dom.length; i++) &#123; this[i] = dom[i] &#125; this.selector = selector; this.length = dom.length&#125; 由于我们是return new Z(dom,selector),那自然,我们需要手动的把wclimb.Z的prototype指向Z的prototype 123456789wclimb.Z.prototype = Z.prototype&#123;&#125;我们可以在里面添加方法了，如addClass eq等，我们试试加一个testwclimb.Z.prototype = Z.prototype&#123; test: function()&#123; console.log('test') &#125;&#125; Z函数是这样的，因为我们选择器选择的元素是一个数组（其实不是）我们把this指向选择的元素，然后添加两个元素selector和length，分别代表选择的元素名和元素的长度 1234567function Z(dom,selector) &#123; for (var i = 0; i &lt; dom.length; i++) &#123; this[i] = dom[i] &#125; this.selector = selector; this.length = dom.length&#125; 最后我们在window上对外暴露一个接口,我们就可以用 $(‘p’) 或者wclimb(‘p’) 即可调用. 1window.$ = window.wclimb = $ 现在可以试试能不能运行 123html：&lt;p&gt;test&lt;/p&gt;js：$('p') 调用方法试试 $('p').test() 我们的zepto已经完成了，是不是很简单？骗你的，还差得远呢，后面会慢慢完善。待续。。。如果你觉得该文章帮助到了你，不妨star一下https://github.com/wclimb/wclimb.github.io ，感谢]]></content>
       <tags>
-        <tag>原创</tag>
         <tag>javascript</tag>
+        <tag>原创</tag>
         <tag>zepto</tag>
       </tags>
   </entry>
