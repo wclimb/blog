@@ -152,7 +152,7 @@ class Router {
 }
 module.exports = Router;
 ```
-你会发现多了两个方法`install`，`pathRegexp`。`install`是用来注册路由的，首先拿到请求方法和路径，然后去之前收集的路由查找是否存在这个路由，如果不存在直接返回404，如果存在会调用 `pathRegexp` 做路径匹配，因为可能会有 `/:id`、 `/user`，这种不同的路由，这里借鉴一下 `koa-router` 获取参数的方式，比如我们路由是 `/:id/test/:p`，当我们访问 `/123/test/456`的时候，我们可以拿到一个对象`params: {id:123,p:456}`。其实 `koa-router` 的路由匹配规则用的是 [path-to-regexp](https://github.com/pillarjs/path-to-regexp) 这个包，我们这里是自己做得匹配，可以思考一下 `pathRegexp` 方法的实现。如果发现匹配，我们会把`params`赋值到`req`对象上，然后调用执行中间件的操作，也就是 `app.handle(req, res, stacks);`，你会发现上面我们注册的时候压根就没有传递`app`，因为这是后面需要将的内容，实现中间件
+你会发现多了两个方法`install`，`pathRegexp`。`install`是用来注册路由的，首先拿到请求方法和路径，然后去之前收集的路由查找是否存在这个路由，如果不存在直接返回404，如果存在会调用 `pathRegexp` 做路径匹配，因为可能会有 `/:id`、 `/user`，这种不同的路由，这里借鉴一下 `koa-router` 获取参数的方式，比如我们路由是 `/:id/test/:p`，当我们访问 `/123/test/456`的时候，我们可以拿到一个对象`params: {id:123,p:456}`。其实 `koa-router` 的路由匹配规则用的是 [path-to-regexp](https://github.com/pillarjs/path-to-regexp) 这个包，我们这里是自己做的匹配，可以思考一下上面 `pathRegexp` 方法的实现，正则好的同学应该看得很明白。如果发现匹配，我们会把 `params` 赋值到 `req` 对象上，然后调用执行中间件的操作，也就是 `app.handle(req, res, stacks);`，你会发现上面我们注册的时候压根就没有传递 `app`，因为这是后面需要讲的内容，实现中间件
 
 顺便说一下，如果你想让上面的代码正常执行，把 `app.handle()` 这行代码去掉，然后 `res.end()` 就可以正常执行了
 
