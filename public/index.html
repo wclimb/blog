@@ -310,6 +310,184 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.wclimb.site/2020/04/15/node-process/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wclimb">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wclimb的个人博客--分享">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/04/15/node-process/" itemprop="url">Nodejs之进程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-15T15:04:18+08:00">
+                2020-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Node/" itemprop="url" rel="index">
+                    <span itemprop="name">Node</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Node/进程/" itemprop="url" rel="index">
+                    <span itemprop="name">进程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon" style="margin-left:4px;">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">约</span>
+                
+                <span title="约">
+                  19 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
+<p>本文大部分借鉴至深入浅出Node.js</p>
+</blockquote>
+<p>本文开始讲一下 <code>Node</code> 的进程，<code>Node</code> 是建立在 <code>V8</code> 引擎之上的，程序基本上是运行在单进程的单线程上的，那么这样就会导致机器的资源没有被合理的利用，<code>CPU</code> 使用率低，所以我们需要多开进程，充分利用多核 <code>CPU</code> 服务器，但是多开进程又会面临进程管理方面的问题。下面我们来具体说说。</p>
+<h2 id="单线程？"><a href="#单线程？" class="headerlink" title="单线程？"></a>单线程？</h2><p>我们知道 <code>JavaScript</code> 是单线程的，<code>Node</code> 也是？，<code>Node</code> 其实不是，<code>Node</code> 并非真正的单线程架构，<code>Node</code> 自身还有 一定的 <code>I/O</code> 线程存在，这些 <code>I/O</code> 线程由底层 <code>libuv</code> 处理，这部分线程对于 <code>JavaScript</code> 开发者而言是透明的，只在 <code>C++</code> 扩展开发时才会关注到。<code>JavaScript</code> 代码永远运行在 <code>V8</code> 上，是单线程的。</p>
+<h2 id="创建多进程"><a href="#创建多进程" class="headerlink" title="创建多进程"></a>创建多进程</h2><p><code>Node</code> 提供了创建进程的方法，<code>child_process</code>，这里我们使用 <code>fork</code> 方法，它还有其他几个方法这里就不作介绍了<br><code>master.js</code><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fork = <span class="built_in">require</span>(<span class="string">"child_process"</span>).fork</span><br><span class="line"><span class="keyword">const</span> cpus = <span class="built_in">require</span>(<span class="string">'os'</span>).cpus();</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; cpus.length; i++) &#123;</span><br><span class="line">  fork(<span class="string">'./worker.js'</span>); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到我们获取当前机器的 <code>cpu</code> 数量，然后批量创建子进程，我们新建 <code>worker.js</code>，内容如下<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">"http"</span>);</span><br><span class="line">process.title = <span class="string">"worker"</span>;</span><br><span class="line"><span class="built_in">console</span>.log(process.pid)</span><br><span class="line">http</span><br><span class="line">  .createServer(<span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">    res.writeHead(<span class="number">200</span>, &#123; <span class="string">"Content-Type"</span>: <span class="string">"text/plain"</span> &#125;);</span><br><span class="line">    res.end(<span class="string">"Hello World\n"</span>);</span><br><span class="line">  &#125;)</span><br><span class="line">  .listen(<span class="built_in">Math</span>.round((<span class="number">1</span> + <span class="built_in">Math</span>.random()) * <span class="number">1000</span>);</span><br></pre></td></tr></table></figure></p>
+<p>启动<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node master.js</span><br></pre></td></tr></table></figure></p>
+<p>控制台打印的pid<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">35115</span><br><span class="line">35116</span><br><span class="line">35117</span><br><span class="line">35118</span><br><span class="line">35119</span><br><span class="line">35120</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">            +--------+         </span><br><span class="line">            | Master | &lt;------ master.js</span><br><span class="line">            +--------+        </span><br><span class="line">            /   |     \</span><br><span class="line">          /     |       \</span><br><span class="line">        /       |        \ &lt;----复制</span><br><span class="line">      /         |          \</span><br><span class="line">    v           v            v</span><br><span class="line">+--------+   +--------+   +---------+</span><br><span class="line">| 工作进程 |  | 工作进程 |   | 工作进程 | &lt;------ worker.js</span><br><span class="line">+--------+   +--------+   +---------+</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/04/15/node-process/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://www.wclimb.site/2020/04/14/node-route-middleware/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -603,7 +781,7 @@
 
       
         
-          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近看完了朴大的 《深入浅出nodejs》 这本书，在里面学到了许多，也推荐大家可以去看一下，看完感觉可以写几篇文章记录总结一下，提升一下印象，毕竟学到的东西感觉不记下来过不久就容易忘记，大家也要养成学习记录的习惯，方便以后重温，今天来实现一个 <code>node</code> 的模版引擎，当然这个模版引擎在前端也可以用。</p>
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近看完了朴大的 《深入浅出Node.js》 这本书，在里面学到了许多，也推荐大家可以去看一下，看完感觉可以写几篇文章记录总结一下，提升一下印象，毕竟学到的东西感觉不记下来过不久就容易忘记，大家也要养成学习记录的习惯，方便以后重温，今天来实现一个 <code>node</code> 的模版引擎，当然这个模版引擎在前端也可以用。</p>
 <h2 id="借鉴ejs标签"><a href="#借鉴ejs标签" class="headerlink" title="借鉴ejs标签"></a>借鉴ejs标签</h2><p>标签借鉴 <code>ejs</code>，用过的同学肯定知道，例如使用 <code>&lt;%= name %&gt;</code> 这种标签来展示数据，使用 <code>&lt;% if(name){ %&gt;</code> 这种标签来做 <code>js</code> 操作，如 <code>if</code> 判断/ <code>for</code>循环，比如下面<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">%</span> <span class="attr">if</span> (<span class="attr">name</span>) &#123; %&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">h1</span>&gt;</span><span class="tag">&lt;<span class="name">%=name%</span>&gt;</span><span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">%</span> &#125; <span class="attr">else</span> &#123; %&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">h1</span>&gt;</span>请登陆<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">%</span> &#125; %&gt;</span></span><br></pre></td></tr></table></figure></p>
 <h2 id="渲染方法"><a href="#渲染方法" class="headerlink" title="渲染方法"></a>渲染方法</h2><p>我们先来看个简单的渲染
           <!--noindex-->
@@ -1874,177 +2052,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://www.wclimb.site/2019/12/16/Koa源码系列之依赖包解析/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wclimb">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="wclimb的个人博客--分享">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/12/16/Koa源码系列之依赖包解析/" itemprop="url">Koa源码系列之依赖包解析</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-16T10:19:49+08:00">
-                2019-12-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/" itemprop="url" rel="index">
-                    <span itemprop="name">javascript</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/Koa/" itemprop="url" rel="index">
-                    <span itemprop="name">Koa</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon" style="margin-left:4px;">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">约</span>
-                
-                <span title="约">
-                  8 分钟
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>上一篇我们讲了 <a href="http://www.wclimb.site/2019/12/11/Koa源码系列之koa-compose/">Koa源码系列之koa-compose</a>，其实也可以归为到这篇文章。今天开始我们看看<code>Koa</code>源码中使用了哪些包，他们起到了什么作用。ps: 这里不准备讲所有的包</p>
-<h2 id="is-generator-function"><a href="#is-generator-function" class="headerlink" title="is-generator-function"></a>is-generator-function</h2><p><a href="https://github.com/koajs/koa/blob/master/lib/application.js#L122" target="_blank" rel="noopener">https://github.com/koajs/koa/blob/master/lib/application.js#L122</a><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">use(fn) &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> fn !== <span class="string">'function'</span>) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'middleware must be a function!'</span>);</span><br><span class="line">  <span class="keyword">if</span> (isGeneratorFunction(fn)) &#123;</span><br><span class="line">    deprecate(<span class="string">'Support for generators will be removed in v3. '</span> +</span><br><span class="line">              <span class="string">'See the documentation for examples of how to convert old middleware '</span> +</span><br><span class="line">              <span class="string">'https://github.com/koajs/koa/blob/master/docs/migration.md'</span>);</span><br><span class="line">    fn = convert(fn);</span><br><span class="line">  &#125;</span><br><span class="line">  debug(<span class="string">'use %s'</span>, fn._name || fn.name || <span class="string">'-'</span>);</span><br><span class="line">  <span class="keyword">this</span>.middleware.push(fn);</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>可以看看上面一段代码，<code>koa</code>在注入中间件的之前先判断传入是否是函数，然后判断当前传入的函数是否是 <code>generator</code>，如果是 <code>generator</code> 那么使用<code>convert</code>（<code>koa-convert</code>包，下面会讲到）进行转换，其实转换出来返回的是一个 <code>promise</code>，那么怎么判断是否是 <code>generator</code> 函数的呢？使用了<code>isGeneratorFunction</code>方法，也就是 <code>is-generator-function</code>包，下面是源码<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/12/16/Koa源码系列之依赖包解析/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </p></div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2092,7 +2099,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-count">38</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2103,7 +2110,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

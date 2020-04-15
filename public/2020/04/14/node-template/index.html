@@ -97,18 +97,18 @@
 
 
 
-<meta name="description" content="前言最近看完了朴大的 《深入浅出nodejs》 这本书，在里面学到了许多，也推荐大家可以去看一下，看完感觉可以写几篇文章记录总结一下，提升一下印象，毕竟学到的东西感觉不记下来过不久就容易忘记，大家也要养成学习记录的习惯，方便以后重温，今天来实现一个 node 的模版引擎，当然这个模版引擎在前端也可以用。 借鉴ejs标签标签借鉴 ejs，用过的同学肯定知道，例如使用 &amp;lt;%= name %&amp;gt">
+<meta name="description" content="前言最近看完了朴大的 《深入浅出Node.js》 这本书，在里面学到了许多，也推荐大家可以去看一下，看完感觉可以写几篇文章记录总结一下，提升一下印象，毕竟学到的东西感觉不记下来过不久就容易忘记，大家也要养成学习记录的习惯，方便以后重温，今天来实现一个 node 的模版引擎，当然这个模版引擎在前端也可以用。 借鉴ejs标签标签借鉴 ejs，用过的同学肯定知道，例如使用 &amp;lt;%= name %&amp;g">
 <meta name="keywords" content="javascript,原创,Node">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Nodejs之实现一个模版引擎">
 <meta property="og:url" content="http://www.wclimb.site/2020/04/14/node-template/index.html">
 <meta property="og:site_name" content="wclimb的个人博客--分享">
-<meta property="og:description" content="前言最近看完了朴大的 《深入浅出nodejs》 这本书，在里面学到了许多，也推荐大家可以去看一下，看完感觉可以写几篇文章记录总结一下，提升一下印象，毕竟学到的东西感觉不记下来过不久就容易忘记，大家也要养成学习记录的习惯，方便以后重温，今天来实现一个 node 的模版引擎，当然这个模版引擎在前端也可以用。 借鉴ejs标签标签借鉴 ejs，用过的同学肯定知道，例如使用 &amp;lt;%= name %&amp;gt">
+<meta property="og:description" content="前言最近看完了朴大的 《深入浅出Node.js》 这本书，在里面学到了许多，也推荐大家可以去看一下，看完感觉可以写几篇文章记录总结一下，提升一下印象，毕竟学到的东西感觉不记下来过不久就容易忘记，大家也要养成学习记录的习惯，方便以后重温，今天来实现一个 node 的模版引擎，当然这个模版引擎在前端也可以用。 借鉴ejs标签标签借鉴 ejs，用过的同学肯定知道，例如使用 &amp;lt;%= name %&amp;g">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-04-14T08:51:36.999Z">
+<meta property="og:updated_time" content="2020-04-15T16:05:41.618Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Nodejs之实现一个模版引擎">
-<meta name="twitter:description" content="前言最近看完了朴大的 《深入浅出nodejs》 这本书，在里面学到了许多，也推荐大家可以去看一下，看完感觉可以写几篇文章记录总结一下，提升一下印象，毕竟学到的东西感觉不记下来过不久就容易忘记，大家也要养成学习记录的习惯，方便以后重温，今天来实现一个 node 的模版引擎，当然这个模版引擎在前端也可以用。 借鉴ejs标签标签借鉴 ejs，用过的同学肯定知道，例如使用 &amp;lt;%= name %&amp;gt">
+<meta name="twitter:description" content="前言最近看完了朴大的 《深入浅出Node.js》 这本书，在里面学到了许多，也推荐大家可以去看一下，看完感觉可以写几篇文章记录总结一下，提升一下印象，毕竟学到的东西感觉不记下来过不久就容易忘记，大家也要养成学习记录的习惯，方便以后重温，今天来实现一个 node 的模版引擎，当然这个模版引擎在前端也可以用。 借鉴ejs标签标签借鉴 ejs，用过的同学肯定知道，例如使用 &amp;lt;%= name %&amp;g">
 
 
 
@@ -435,7 +435,7 @@
       
 
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近看完了朴大的 《深入浅出nodejs》 这本书，在里面学到了许多，也推荐大家可以去看一下，看完感觉可以写几篇文章记录总结一下，提升一下印象，毕竟学到的东西感觉不记下来过不久就容易忘记，大家也要养成学习记录的习惯，方便以后重温，今天来实现一个 <code>node</code> 的模版引擎，当然这个模版引擎在前端也可以用。</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近看完了朴大的 《深入浅出Node.js》 这本书，在里面学到了许多，也推荐大家可以去看一下，看完感觉可以写几篇文章记录总结一下，提升一下印象，毕竟学到的东西感觉不记下来过不久就容易忘记，大家也要养成学习记录的习惯，方便以后重温，今天来实现一个 <code>node</code> 的模版引擎，当然这个模版引擎在前端也可以用。</p>
 <h2 id="借鉴ejs标签"><a href="#借鉴ejs标签" class="headerlink" title="借鉴ejs标签"></a>借鉴ejs标签</h2><p>标签借鉴 <code>ejs</code>，用过的同学肯定知道，例如使用 <code>&lt;%= name %&gt;</code> 这种标签来展示数据，使用 <code>&lt;% if(name){ %&gt;</code> 这种标签来做 <code>js</code> 操作，如 <code>if</code> 判断/ <code>for</code>循环，比如下面<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">%</span> <span class="attr">if</span> (<span class="attr">name</span>) &#123; %&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">h1</span>&gt;</span><span class="tag">&lt;<span class="name">%=name%</span>&gt;</span><span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">%</span> &#125; <span class="attr">else</span> &#123; %&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">h1</span>&gt;</span>请登陆<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">%</span> &#125; %&gt;</span></span><br></pre></td></tr></table></figure></p>
 <h2 id="渲染方法"><a href="#渲染方法" class="headerlink" title="渲染方法"></a>渲染方法</h2><p>我们先来看个简单的渲染<a id="more"></a><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> str = <span class="string">'hello &lt;%=name%&gt;'</span></span><br></pre></td></tr></table></figure></p>
 <p>假如我们的有一个字段 <code>name = &#39;wclimb&#39;;</code><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> name = <span class="string">'wclimb'</span>;</span><br><span class="line"><span class="keyword">let</span> str = <span class="string">'hello &lt;%=name%&gt;'</span>;</span><br><span class="line">str.replace(<span class="regexp">/&lt;%=([\S\s]+?)%&gt;/g</span>, <span class="function"><span class="keyword">function</span>(<span class="params">match,value</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">return</span> name</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
@@ -456,7 +456,7 @@
 <h3 id="使用文件模版"><a href="#使用文件模版" class="headerlink" title="使用文件模版"></a>使用文件模版</h3><p>我们可以新建一个模版 <code>test.ejs</code> 文件，内容为之前的测试内容<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">render(fs.readFileSync(<span class="string">`test.ejs`</span>, <span class="string">"utf8"</span>) ,&#123;<span class="attr">users</span>: [&#123; <span class="attr">name</span>: <span class="string">"wclimb"</span> &#125;, &#123; <span class="attr">name</span>: <span class="string">"other"</span> &#125;]&#125;);</span><br></pre></td></tr></table></figure></p>
 <h2 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h2><p>一个模版引擎就完成了，挺简单的，说得有点多了，下一篇带大家实现一个路由和中间件</p>
 <h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
-<li><a href="https://book.douban.com/subject/25768396/" target="_blank" rel="noopener">深入浅出nodejs</a></li>
+<li><a href="https://book.douban.com/subject/25768396/" target="_blank" rel="noopener">深入浅出Node.js</a></li>
 </ul>
 <p>本文地址 <a href="http://www.wclimb.site/2020/04/14/node-template/">Nodejs之实现一个模版引擎</a></p>
 
@@ -608,7 +608,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-count">38</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -619,7 +619,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

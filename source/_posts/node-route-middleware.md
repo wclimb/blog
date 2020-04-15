@@ -332,6 +332,6 @@ app.get("/user/:id", function(req, res) {
 
 ## Reference
 
-* [深入浅出nodejs](https://book.douban.com/subject/25768396/)
+* [深入浅出Node.js](https://book.douban.com/subject/25768396/)
 
 本文地址 [Nodejs之实现路由和中间件](http://www.wclimb.site/2020/04/14/node-route-middleware/)

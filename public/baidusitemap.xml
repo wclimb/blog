@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://www.wclimb.site/2020/04/14/node-route-middleware/</loc>
+    <loc>http://www.wclimb.site/2020/04/15/node-process/</loc>
     <lastmod>2020-04-15</lastmod>
   </url>  <url>
     <loc>http://www.wclimb.site/2020/04/14/node-template/</loc>
-    <lastmod>2020-04-14</lastmod>
+    <lastmod>2020-04-15</lastmod>
+  </url>  <url>
+    <loc>http://www.wclimb.site/2020/04/14/node-route-middleware/</loc>
+    <lastmod>2020-04-15</lastmod>
   </url>  <url>
     <loc>http://www.wclimb.site/2020/04/04/node-proxy/</loc>
     <lastmod>2020-04-04</lastmod>

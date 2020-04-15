@@ -310,6 +310,177 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.wclimb.site/2019/12/16/Koa源码系列之依赖包解析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wclimb">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wclimb的个人博客--分享">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/12/16/Koa源码系列之依赖包解析/" itemprop="url">Koa源码系列之依赖包解析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-16T10:19:49+08:00">
+                2019-12-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/javascript/" itemprop="url" rel="index">
+                    <span itemprop="name">javascript</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/javascript/Koa/" itemprop="url" rel="index">
+                    <span itemprop="name">Koa</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon" style="margin-left:4px;">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">约</span>
+                
+                <span title="约">
+                  8 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>上一篇我们讲了 <a href="http://www.wclimb.site/2019/12/11/Koa源码系列之koa-compose/">Koa源码系列之koa-compose</a>，其实也可以归为到这篇文章。今天开始我们看看<code>Koa</code>源码中使用了哪些包，他们起到了什么作用。ps: 这里不准备讲所有的包</p>
+<h2 id="is-generator-function"><a href="#is-generator-function" class="headerlink" title="is-generator-function"></a>is-generator-function</h2><p><a href="https://github.com/koajs/koa/blob/master/lib/application.js#L122" target="_blank" rel="noopener">https://github.com/koajs/koa/blob/master/lib/application.js#L122</a><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">use(fn) &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> fn !== <span class="string">'function'</span>) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'middleware must be a function!'</span>);</span><br><span class="line">  <span class="keyword">if</span> (isGeneratorFunction(fn)) &#123;</span><br><span class="line">    deprecate(<span class="string">'Support for generators will be removed in v3. '</span> +</span><br><span class="line">              <span class="string">'See the documentation for examples of how to convert old middleware '</span> +</span><br><span class="line">              <span class="string">'https://github.com/koajs/koa/blob/master/docs/migration.md'</span>);</span><br><span class="line">    fn = convert(fn);</span><br><span class="line">  &#125;</span><br><span class="line">  debug(<span class="string">'use %s'</span>, fn._name || fn.name || <span class="string">'-'</span>);</span><br><span class="line">  <span class="keyword">this</span>.middleware.push(fn);</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看看上面一段代码，<code>koa</code>在注入中间件的之前先判断传入是否是函数，然后判断当前传入的函数是否是 <code>generator</code>，如果是 <code>generator</code> 那么使用<code>convert</code>（<code>koa-convert</code>包，下面会讲到）进行转换，其实转换出来返回的是一个 <code>promise</code>，那么怎么判断是否是 <code>generator</code> 函数的呢？使用了<code>isGeneratorFunction</code>方法，也就是 <code>is-generator-function</code>包，下面是源码<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/12/16/Koa源码系列之依赖包解析/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </p></div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://www.wclimb.site/2019/12/11/Koa源码系列之koa-compose/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1873,178 +2044,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://www.wclimb.site/2018/09/11/JavaScript之实现一个简单的Vue/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wclimb">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="wclimb的个人博客--分享">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/11/JavaScript之实现一个简单的Vue/" itemprop="url">JavaScript之实现一个简单的Vue</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-11T17:48:22+08:00">
-                2018-09-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/" itemprop="url" rel="index">
-                    <span itemprop="name">javascript</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/vue/" itemprop="url" rel="index">
-                    <span itemprop="name">vue</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon" style="margin-left:4px;">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">约</span>
-                
-                <span title="约">
-                  7 分钟
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>vue的使用相信大家都很熟练了，使用起来简单。但是大部分人不知道其内部的原理是怎么样的，今天我们就来一起实现一个简单的vue</p>
-<h1 id="Object-defineProperty"><a href="#Object-defineProperty" class="headerlink" title="Object.defineProperty()"></a>Object.defineProperty()</h1><p>实现之前我们得先看一下<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty" target="_blank" rel="noopener">Object.defineProperty</a>的实现，因为vue主要是通过数据劫持来实现的，通过<code>get</code>、<code>set</code>来完成数据的读取和更新。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;<span class="attr">name</span>:<span class="string">'wclimb'</span>&#125;</span><br><span class="line"><span class="keyword">var</span> age = <span class="number">24</span></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(obj,<span class="string">'age'</span>,&#123;</span><br><span class="line">	enumerable: <span class="literal">true</span>, <span class="comment">// 可枚举</span></span><br><span class="line">    configurable: <span class="literal">false</span>, <span class="comment">// 不能再define</span></span><br><span class="line">    <span class="keyword">get</span> () &#123;</span><br><span class="line">        <span class="keyword">return</span> age</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="keyword">set</span> (newVal) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'我改变了'</span>,age +<span class="string">' -&gt; '</span>+newVal);</span><br><span class="line">        age = newVal</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">&gt; obj.age</span><br><span class="line">&gt; <span class="number">24</span></span><br><span class="line"></span><br><span class="line">&gt; obj.age = <span class="number">25</span>;</span><br><span class="line">&gt; 我改变了 <span class="number">24</span> -&gt; <span class="number">25</span></span><br><span class="line">&gt; <span class="number">25</span></span><br></pre></td></tr></table></figure>
-<p>从上面可以看到通过<code>get</code>获取数据，通过<code>set</code>监听到数据变化执行相应操作，还是不明白的话可以去看看<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty" target="_blank" rel="noopener">Object.defineProperty</a>文档。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/09/11/JavaScript之实现一个简单的Vue/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </p></div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2092,7 +2091,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-count">38</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2103,7 +2102,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

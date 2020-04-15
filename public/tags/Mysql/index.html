@@ -374,7 +374,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-count">38</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -385,7 +385,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -972,6 +972,60 @@ document.getElementById("showDays").innerHTML = "本站已运行 "+total+" 天";
           // remove loading animation
           $(".local-search-pop-overlay").remove();
           $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  <script src="https://cdn.bootcss.com/clipboard.js/2.0.6/clipboard.min.js"></script>
+  <style>
+  </style>
+  <script>
+    !function(){var initCopyCode=function(){var copyHtml='<div class="btn-copy" data-clipboard-snippet="">复制代码</div>';$(".highlight .code pre").before(copyHtml);$('.highlight table').wrap('<div style="overflow: auto;"></div>');var clipboard=new ClipboardJS(".btn-copy",{target:function(trigger){return trigger.nextElementSibling}});clipboard.on("success",function(e){e.clearSelection();e.trigger.innerHTML = '复制成功^_^';setTimeout(function(){e.trigger.innerHTML = '复制代码'},3000)})};initCopyCode()}();
+  </script>
+</body>
+</html>
+css('overflow', '');
 
           proceedsearch();
         }
