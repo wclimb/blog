@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.wclimb.site/about/index.html</loc>
+    
+    <lastmod>2020-04-20T12:00:02.829Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.wclimb.site/2020/04/15/node-process/</loc>
     
     <lastmod>2020-04-16T07:26:41.894Z</lastmod>
@@ -26,13 +33,6 @@
     <loc>http://www.wclimb.site/2020/04/04/node-proxy/</loc>
     
     <lastmod>2020-04-04T08:54:11.527Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.wclimb.site/about/index.html</loc>
-    
-    <lastmod>2020-04-04T08:41:38.191Z</lastmod>
     
   </url>
   

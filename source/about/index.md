@@ -51,6 +51,10 @@ type: "about"
 
 有兴趣的同学可以加qq群: 725165362 [点击加入](http://shang.qq.com/wpa/qunwpa?idkey=e6c66b1ee584a90b52dec3545622e988afcf900144eff03cab6d473c50a31d59)
 
+## 公众号
+
+![img](/img/gzh.png)
+
 ## 个人小程序
 
 小程序因为资源空间和https证书到期暂时没有续期，所以暂停访问吧。
