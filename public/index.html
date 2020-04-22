@@ -310,6 +310,181 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.wclimb.site/2020/04/22/simple-webpack/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wclimb">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wclimb的个人博客--分享">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/04/22/simple-webpack/" itemprop="url">编写一个webpack</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-22T15:24:11+08:00">
+                2020-04-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/javascript/" itemprop="url" rel="index">
+                    <span itemprop="name">javascript</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/javascript/webpack/" itemprop="url" rel="index">
+                    <span itemprop="name">webpack</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon" style="margin-left:4px;">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">约</span>
+                
+                <span title="约">
+                  12 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="实现功能"><a href="#实现功能" class="headerlink" title="实现功能"></a>实现功能</h2><ol>
+<li>支持 <code>esModule</code> </li>
+<li>支持 <code>import()</code> 异步加载文件</li>
+<li>支持 <code>loader</code></li>
+</ol>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>我们需要借助 <code>babel</code> 来解析，先 <code>npm init -y</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i @babel/parser @babel/traverse @babel/core @babel/preset-env -D</span><br></pre></td></tr></table></figure></p>
+<p>最终的文件目录结构<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">|-- dist           // 打包目标文件夹 </span><br><span class="line">|   |-- 0.bundle.js                       </span><br><span class="line">|   |-- 1.bundle.js                    </span><br><span class="line">|   |-- result.js                       </span><br><span class="line">|-- src            // 项目测试代码                         </span><br><span class="line">|   |-- entry.js                   </span><br><span class="line">|   |-- messgae.js            </span><br><span class="line">|   |-- name.js            </span><br><span class="line">|   |-- a.js              </span><br><span class="line">|   |-- b.js            </span><br><span class="line">|-- index.html      // 加载文件打包出的文件             </span><br><span class="line">|-- app.js          // 启动文件         </span><br><span class="line">|-- init.js         // 打包项目需要的初始化代码</span><br><span class="line">|-- babel-plugin.js // babel插件</span><br><span class="line">|-- loader.js       // loader</span><br><span class="line">|-- package.json</span><br></pre></td></tr></table></figure></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/04/22/simple-webpack/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://www.wclimb.site/2020/04/15/node-process/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1880,178 +2055,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://www.wclimb.site/2019/12/23/Koa源码系列之全流程解析/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wclimb">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="wclimb的个人博客--分享">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/12/23/Koa源码系列之全流程解析/" itemprop="url">Koa源码系列之全流程解析</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-23T16:13:58+08:00">
-                2019-12-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/" itemprop="url" rel="index">
-                    <span itemprop="name">javascript</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/Koa/" itemprop="url" rel="index">
-                    <span itemprop="name">Koa</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon" style="margin-left:4px;">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">约</span>
-                
-                <span title="约">
-                  17 分钟
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>之前我们已经讲解了<code>koa</code>源码中的一些依赖包，<a href="http://www.wclimb.site/2019/12/16/Koa源码系列之依赖包解析/">Koa源码系列之依赖包解析</a> <a href="http://www.wclimb.site/2019/12/11/Koa源码系列之koa-compose/">Koa源码系列之koa-compose</a>，现在我们来看看<code>koa</code>源码的全流程</p>
-<h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><p>我们首先来看看最简单的用法，一下是官网的示例<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Koa = <span class="built_in">require</span>(<span class="string">'koa'</span>);</span><br><span class="line"><span class="keyword">const</span> app = <span class="keyword">new</span> Koa();</span><br><span class="line"></span><br><span class="line">app.use(<span class="keyword">async</span> ctx =&gt; &#123;</span><br><span class="line">  ctx.body = <span class="string">'Hello World'</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.listen(<span class="number">3000</span>);</span><br></pre></td></tr></table></figure></p>
-<p>首先我们引入<code>koa</code>包，然后实例化一个对象，也就是<code>const = new Koa()</code>。然后调用<code>use</code>方法，这个方法之前在<a href="http://www.wclimb.site/2019/12/11/Koa源码系列之koa-compose/">Koa源码系列之koa-compose</a>讲过，用处就是挂载中间件。当前内部执行的方法就是向前端返回一个<code>hello world</code>的内容，最后我们将应用挂载在<code>3000</code>端口下，这个<code>listen</code>很重要，因为一切我们定义的的方法都会从这里执行。我们看看 <code>Koa</code> 的构造函数的主入口是从哪暴露的，先来🤔思考一个问题，我们怎么快速找到一个包的主入口呢？如果你发布过<code>npm</code>包就知道，我们可以在<code>package.json</code>内找到<code>main</code>，<code>koa</code>的内容是 <code>&quot;main&quot;: &quot;lib/application.js&quot;</code>，现在我们可以直接去查看<code>lib</code>下的<code>application</code>文件，是不是很方便？</p>
-<p>接下来部分解析可能在代码注释内<br><a href="https://github.com/koajs/koa/blob/master/lib/application.js#L30" target="_blank" rel="noopener">https://github.com/koajs/koa/blob/master/lib/application.js#L30</a><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="class"><span class="keyword">class</span> <span class="title">Application</span> <span class="keyword">extends</span> <span class="title">Emitter</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(options) &#123;</span><br><span class="line">    <span class="keyword">super</span>();</span><br><span class="line">    options = options || &#123;&#125;;</span><br><span class="line">    <span class="keyword">this</span>.proxy = options.proxy || <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">this</span>.subdomainOffset = options.subdomainOffset || <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">this</span>.proxyIpHeader = options.proxyIpHeader || <span class="string">'X-Forwarded-For'</span>;</span><br><span class="line">    <span class="keyword">this</span>.maxIpsCount = options.maxIpsCount || <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">this</span>.env = options.env || process.env.NODE_ENV || <span class="string">'development'</span>;</span><br><span class="line">    <span class="keyword">if</span> (options.keys) <span class="keyword">this</span>.keys = options.keys;</span><br><span class="line">    <span class="comment">// 存放中间件</span></span><br><span class="line">    <span class="keyword">this</span>.middleware = [];</span><br><span class="line">    <span class="keyword">this</span>.context = <span class="built_in">Object</span>.create(context);</span><br><span class="line">    <span class="keyword">this</span>.request = <span class="built_in">Object</span>.create(request);</span><br><span class="line">    <span class="keyword">this</span>.response = <span class="built_in">Object</span>.create(response);</span><br><span class="line">    <span class="keyword">if</span> (util.inspect.custom) &#123;</span><br><span class="line">      <span class="keyword">this</span>[util.inspect.custom] = <span class="keyword">this</span>.inspect;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/12/23/Koa源码系列之全流程解析/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2099,7 +2102,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">38</span>
+                <span class="site-state-item-count">39</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2162,7 +2165,7 @@
               </span>
             
               <span class="links-of-author-item">
-                <a href="/img/gzh.png" target="_blank" title="公众号">
+                <a href="/img/gzh.jpg" target="_blank" title="公众号">
                   
                     <i class="fa fa-fw fa-globe"></i>
                   

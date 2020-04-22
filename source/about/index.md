@@ -53,7 +53,7 @@ type: "about"
 
 ## 公众号
 
-![img](/img/gzh.png)
+![img](/img/gzh.jpg)
 
 ## 个人小程序
 
