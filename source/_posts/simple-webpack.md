@@ -42,7 +42,7 @@ npm i @babel/parser @babel/traverse @babel/core @babel/preset-env -D
 ```
 <!-- more -->
 文件内容
-entry.js
+`entry.js`
 ```js
 import message from "./message.js";
 console.log(message);
@@ -50,7 +50,7 @@ import("./a.js").then(() => {
   console.log("a done");
 });
 ```
-message.js
+`message.js`
 ```js
 import { name } from "./name.js";
 export default `hello ${name}!`;
@@ -58,21 +58,21 @@ import("./a.js").then(() => {
   console.log("copy a done");
 });
 ```
-name.js
+`name.js`
 ```js
 export const name = "world";
 import("./b.js").then(() => {
   console.log("b done");
 });
 ```
-a.js
+`a.js`
 ```js
 console.log("import a");
 setTimeout(() => {
   document.body.style = "background:red;";
 }, 3000);
 ```
-b.js
+`b.js`
 ```js
 console.log("import b");
 ```
