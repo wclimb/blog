@@ -28,21 +28,21 @@ categories: [javascript,node,'微信支付',egg]
 以下才用的是微信模式二，因为比较简单
 <!-- more -->
 ```js
-    let MD5 = require('md5'),
-	    xml2js = require('xml2js'),
-        url = "https://api.mch.weixin.qq.com/pay/unifiedorder",// 下单请求地址
-	    appid = '公众号id',
-        mch_id = '微信商户号'；
-	    notify_url = '回调地址',
-	    out_trade_no = '自己设置的订单号',// 微信会有自己订单号、我们自己的系统需要设置自己的订单号
-	    total_fee = '订单金额',// 注意，单位为分
-	    body = '商品简单描述', 
-	    trade_type = 'NATIVE',// 交易类型，JSAPI--公众号支付、NATIVE--原生扫码支付、APP--app支付
-	    nonce_str = moment().format('YYYYMMDDHHmmssSSS'),// 随机字符串32位以下
-	    stringA = `appid=${公众号id}&body=${body}&mch_id=${微信商户号}&nonce_str=${nonce_str}&notify_url=${
-		notify_url}&out_trade_no=${out_trade_no}&spbill_create_ip=${ctx.request.ip}&total_fee=${total_fee}&trade_type=${trade_type}`,
-	    stringSignTemp = stringA + "&key=xxxxxxxxxxxxxxxxx", //注：key为商户平台设置的密钥key
-	    sign = MD5(stringSignTemp).toUpperCase();  //注：MD5签名方式
+let MD5 = require('md5'),
+  xml2js = require('xml2js'),
+  url = "https://api.mch.weixin.qq.com/pay/unifiedorder",// 下单请求地址
+  appid = '公众号id',
+  mch_id = '微信商户号'；
+  notify_url = '回调地址',
+  out_trade_no = '自己设置的订单号',// 微信会有自己订单号、我们自己的系统需要设置自己的订单号
+  total_fee = '订单金额',// 注意，单位为分
+  body = '商品简单描述', 
+  trade_type = 'NATIVE',// 交易类型，JSAPI--公众号支付、NATIVE--原生扫码支付、APP--app支付
+  nonce_str = moment().format('YYYYMMDDHHmmssSSS'),// 随机字符串32位以下
+  stringA = `appid=${公众号id}&body=${body}&mch_id=${微信商户号}&nonce_str=${nonce_str}&notify_url=${
+  notify_url}&out_trade_no=${out_trade_no}&spbill_create_ip=${ctx.request.ip}&total_fee=${total_fee}&trade_type=${trade_type}`,
+  stringSignTemp = stringA + "&key=xxxxxxxxxxxxxxxxx", //注：key为商户平台设置的密钥key
+  sign = MD5(stringSignTemp).toUpperCase();  //注：MD5签名方式
 	
 ```
 以上就是我们所需要的一些参数
@@ -51,75 +51,75 @@ spbill_create_ip 是 终端ip地址
 
 下面把所有的参数拼接成xml
 ```js
-    const formData = "<xml>";
-        formData += "<appid>" + appid + "</appid>"; //appid
-        formData += "<body>" + body + "</body>"; //商品或支付单简要描述
-        formData += "<mch_id>" + mch_id + "</mch_id>"; //商户号
-        formData += "<nonce_str>" + nonce_str + "</nonce_str>"; //随机字符串，不长于32位
-        formData += "<notify_url>" + notify_url + "</notify_url>"; //支付成功后微信服务器通过POST请求通知这个地址
-        formData += "<out_trade_no>" + out_trade_no + "</out_trade_no>"; //订单号
-        formData += "<total_fee>" + total_fee + "</total_fee>"; //金额
-        formData += "<spbill_create_ip>" + ctx.request.ip + "</spbill_create_ip>"; //ip
-        formData += "<trade_type>NATIVE</trade_type>"; //NATIVE会返回code_url ，JSAPI不会返回
-        formData += "<sign>" + sign + "</sign>";
-        formData += "</xml>";
-    // 这里使用了egg里面请求的方式
-	const resultData = yield ctx.curl(url, {
-            method: 'POST',
-            content: formData,
-            headers: {
-                'content-type': 'text/html',
-            },
-        });
+let formData = "<xml>";
+formData += "<appid>" + appid + "</appid>"; //appid
+formData += "<body>" + body + "</body>"; //商品或支付单简要描述
+formData += "<mch_id>" + mch_id + "</mch_id>"; //商户号
+formData += "<nonce_str>" + nonce_str + "</nonce_str>"; //随机字符串，不长于32位
+formData += "<notify_url>" + notify_url + "</notify_url>"; //支付成功后微信服务器通过POST请求通知这个地址
+formData += "<out_trade_no>" + out_trade_no + "</out_trade_no>"; //订单号
+formData += "<total_fee>" + total_fee + "</total_fee>"; //金额
+formData += "<spbill_create_ip>" + ctx.request.ip + "</spbill_create_ip>"; //ip
+formData += "<trade_type>NATIVE</trade_type>"; //NATIVE会返回code_url ，JSAPI不会返回
+formData += "<sign>" + sign + "</sign>";
+formData += "</xml>";
+// 这里使用了egg里面请求的方式
+const resultData = yield ctx.curl(url, {
+  method: "POST",
+  content: formData,
+  headers: {
+    "content-type": "text/html",
+  },
+});
 
-	// xml转json格式
-	xml2js.parseString(resultData.data, function (err, json) {
-		if (err) {
-			new Error("解析xml报错")
-		} else {
-			var result = formMessage(json.xml); // 转换成正常的json 数据
-			console.log(result) //打印出返回的结果
-		}
-	})
-    var formMessage = function (result) {
-        var message = {};
-        if (typeof result === 'object') {
-            var keys = Object.keys(result);
-            for (var i = 0; i < keys.length; i++) {
-                var item = result[keys[i]];
-                var key = keys[i];
-                if (!(item instanceof Array) || item.length === 0) {
-                    continue;
-                }
-                if (item.length === 1) {
-                    var val = item[0];
-                    if (typeof val === 'object') {
-                        message[key] = formMessage(val);
-                    } else {
-                        message[key] = (val || '').trim();
-                    }
-                } else {
-                    message[key] = [];
-                    for (var j = 0, k = item.length; j < k; j++) {
-                        message[key].push(formMessage(itemp[j]));
-                    }
-                }
-            }
+// xml转json格式
+xml2js.parseString(resultData.data, function (err, json) {
+  if (err) {
+    new Error("解析xml报错");
+  } else {
+    var result = formMessage(json.xml); // 转换成正常的json 数据
+    console.log(result); //打印出返回的结果
+  }
+});
+var formMessage = function (result) {
+  var message = {};
+  if (typeof result === "object") {
+    var keys = Object.keys(result);
+    for (var i = 0; i < keys.length; i++) {
+      var item = result[keys[i]];
+      var key = keys[i];
+      if (!(item instanceof Array) || item.length === 0) {
+        continue;
+      }
+      if (item.length === 1) {
+        var val = item[0];
+        if (typeof val === "object") {
+          message[key] = formMessage(val);
+        } else {
+          message[key] = (val || "").trim();
         }
-        return message;
+      } else {
+        message[key] = [];
+        for (var j = 0, k = item.length; j < k; j++) {
+          message[key].push(formMessage(itemp[j]));
+        }
+      }
     }
+  }
+  return message;
+};
 ```
-上面使用了egg的请求方式，node可以使用request
+上面使用了egg的请求方式，node可以使用request和axios
 ```js
-    var request = require('request');
-    request({
-        url: url,
-        method: "POST",
-        body: formData
-    }, function(error, response, body) {
-        if (!error && response.statusCode == 200) {
-        }
-    }); 
+var request = require('request');
+request({
+  url: url,
+  method: "POST",
+  body: formData
+}, function(error, response, body) {
+  if (!error && response.statusCode == 200) {
+  }
+}); 
 ```
 如果请求成功会最终返回一个xml,然后我们进行解析成json的格式,里面会有一个`code_url`和`out_trade_no`,我们需要把这两个返回给前端，然后通过生成二维码展示给用户扫码，完成支付
 
