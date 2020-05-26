@@ -6,7 +6,7 @@ tags:
 - javascript
 - 原创
 
-categories: [javascript,node,教程]
+categories: [Node,教程]
 ---
 # 写在前面
 

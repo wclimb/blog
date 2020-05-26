@@ -8,7 +8,7 @@ tags:
 - javascript
 - 原创
 
-categories: [javascript,node]
+categories: [Node]
 ---
 
 ## Koa2-blog

@@ -8,7 +8,7 @@ tags:
 - javascript
 - 原创
 
-categories: [javascript,HTTP]
+categories: [HTTP]
 ---
 
 # HTTP与缓存相关的字段

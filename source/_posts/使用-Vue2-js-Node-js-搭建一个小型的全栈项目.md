@@ -2,14 +2,14 @@
 title: 使用 Vue2.js + Node.js 搭建一个小型的全栈项目
 date: 2017-09-08 09:29:14
 tags:
-- Vue
+- vue
 - Node
 - Koa
 - Mysql
 - javascript
 - 原创
 
-categories: [javascript,node]
+categories: [Node]
 ---
 
 # 写在前面

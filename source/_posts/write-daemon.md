@@ -4,8 +4,8 @@ date: 2020-03-08 22:09:44
 tags:
 - javascript
 - 原创
-- node
-categories: [javascript,node]
+- Node
+categories: [Node]
 ---
 
 ## 为什么

@@ -7,7 +7,7 @@ tags:
 - javascript
 - 原创
 
-categories: [javascript,node,'微信支付',egg]
+categories: [Node,Egg]
 ---
 # 前言
 
