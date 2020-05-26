@@ -310,6 +310,193 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.wclimb.site/2019/06/06/webpack系列之初探/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wclimb">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wclimb的个人博客--分享">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/06/webpack系列之初探/" itemprop="url">webpack系列之初探</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-06T09:09:42+08:00">
+                2019-06-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/javascript/" itemprop="url" rel="index">
+                    <span itemprop="name">javascript</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/javascript/webpack/" itemprop="url" rel="index">
+                    <span itemprop="name">webpack</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon" style="margin-left:4px;">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">约</span>
+                
+                <span title="约">
+                  14 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>相信<code>webpack</code>这个名称对于前端的同学来说并不陌生，只要你在用<code>vue</code>、<code>react</code>等等之类的框架，就得天天和它打交道。但是大部分人都只是直接怼一个<code>vue-cli</code>脚手架生成一个项目，运行起来就开始一顿写，完全不会去看这个项目的其他相关的东西，今天开始，咱们就来说说这个又爱又恨的<code>webpack</code></p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>使用wepack的时候经常会出现下面这些疑问</p>
+<ol>
+<li><font color="red">你webpack只能打包单页面的文件吗？</font></li>
+<li><font color="red">WTF，我包怎么这么大，加载太慢了</font></li>
+<li><font color="red">我打包速度怎么这么慢，什么破玩意？</font><br>…</li>
+</ol>
+<h2 id="为什么要使用webpack"><a href="#为什么要使用webpack" class="headerlink" title="为什么要使用webpack"></a>为什么要使用webpack</h2><p>哈，你问我为什么要用？因为大家都在用啊😃😃。开个玩笑，前端发展到今天，新技术新思想新框架爆发式增长，当前的浏览器环境跑不赢啊，你说你写个ES6/7在浏览器环境都能跑起来？扯淡的。这个时候<code>babel</code>就出现了，你跑不起来是吧，那我转成<code>ES5</code>你总该跑起来吧~，那<code>babel</code>我还是不能直接用啊，肯定得借助工具编译呀，所以我们需要webpack去做这件事情了。<font color="red">这个时候有人就要站出来说了，我gulp不服，我也能做，我就不用<code>webpack</code></font>。你这么说我就要跟你唠唠了，现在我们先来比较一下<code>webpack</code>和<code>gulp</code>。</p>
+<p><code>gulp</code> 是 <code>task runner</code>，<code>Webpack</code> 是 <code>module bundler</code></p>
+<p>webpack的优势在模块化，<code>gulp</code>除了模块化方面都很不错。但是前端发展至今，模块化真的很重要，<code>CMD</code>、<code>AMD</code>就是模块化的产物。<br>简单来说，如果你当前项目需要模块化编程，那就选<code>webpack</code>，如果是处理其他事情，比如把图片拼接成雪碧图或者压缩，那么<code>gulp</code>是最擅长的</p>
+<p>感兴趣的可以看看这个回答 <a href="https://www.zhihu.com/question/45536395/answer/164361274" target="_blank" rel="noopener">gulp 有哪些功能是 webpack 不能替代的？</a></p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>这里可以参考<a href="https://www.webpackjs.com/guides/getting-started/#%E5%9F%BA%E6%9C%AC%E5%AE%89%E8%A3%85" target="_blank" rel="noopener">webpack官网</a><br>开发环境 <code>webpack: 4.34.0</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; mkdir webpack &amp;&amp; cd webpack</span><br><span class="line">&gt; npm init -y</span><br><span class="line">&gt; npm install webpack webpack-cli -D</span><br></pre></td></tr></table></figure></p>
+<h2 id="入口（entry）"><a href="#入口（entry）" class="headerlink" title="入口（entry）"></a>入口（entry）</h2><p>每个<code>webpack</code>都会有一个<code>entry</code>，就是入口的意思，指示 <code>webpack</code> 应该使用哪个模块，来作为构建其内部依赖图的开始。</p>
+<p>注意点：</p>
+<ol>
+<li>入口可以有多个，如果是单页面只需要一个入口，多页面可以设置多个入口</li>
+<li>入口的文件必须是<code>.js</code>文件，因为<code>webpack</code>只认识<code>js</code>（不完全对，其实任意文件都可以，只是<code>webpack</code>会把它当做<code>js</code>来处理）</li>
+</ol>
+<p>举个🌰<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/06/06/webpack系列之初探/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </p></div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://www.wclimb.site/2019/04/19/redis简易教程以及使用nodejs连接redis/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -609,7 +796,8 @@
 
       
         
-          <p>vue的使用相信大家都很熟练了，使用起来简单。但是大部分人不知道其内部的原理是怎么样的，今天我们就来一起实现一个简单的vue</p>
+          <p><strong>补充：写一个较为强大的Vue，支持虚拟DOM、diff更新以及基本的API，项目地址：<a href="https://github.com/wclimb/euv" target="_blank" rel="noopener">https://github.com/wclimb/euv</a></strong></p>
+<p>vue的使用相信大家都很熟练了，使用起来简单。但是大部分人不知道其内部的原理是怎么样的，今天我们就来一起实现一个简单的vue</p>
 <h1 id="Object-defineProperty"><a href="#Object-defineProperty" class="headerlink" title="Object.defineProperty()"></a>Object.defineProperty()</h1><p>实现之前我们得先看一下<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty" target="_blank" rel="noopener">Object.defineProperty</a>的实现，因为vue主要是通过数据劫持来实现的，通过<code>get</code>、<code>set</code>来完成数据的读取和更新。</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;<span class="attr">name</span>:<span class="string">'wclimb'</span>&#125;</span><br><span class="line"><span class="keyword">var</span> age = <span class="number">24</span></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(obj,<span class="string">'age'</span>,&#123;</span><br><span class="line">	enumerable: <span class="literal">true</span>, <span class="comment">// 可枚举</span></span><br><span class="line">    configurable: <span class="literal">false</span>, <span class="comment">// 不能再define</span></span><br><span class="line">    <span class="keyword">get</span> () &#123;</span><br><span class="line">        <span class="keyword">return</span> age</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="keyword">set</span> (newVal) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'我改变了'</span>,age +<span class="string">' -&gt; '</span>+newVal);</span><br><span class="line">        age = newVal</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">&gt; obj.age</span><br><span class="line">&gt; <span class="number">24</span></span><br><span class="line"></span><br><span class="line">&gt; obj.age = <span class="number">25</span>;</span><br><span class="line">&gt; 我改变了 <span class="number">24</span> -&gt; <span class="number">25</span></span><br><span class="line">&gt; <span class="number">25</span></span><br></pre></td></tr></table></figure>
 <p>从上面可以看到通过<code>get</code>获取数据，通过<code>set</code>监听到数据变化执行相应操作，还是不明白的话可以去看看<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty" target="_blank" rel="noopener">Object.defineProperty</a>文档。<br>
@@ -1220,8 +1408,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/" itemprop="url" rel="index">
-                    <span itemprop="name">javascript</span>
+                  <a href="/categories/Node/" itemprop="url" rel="index">
+                    <span itemprop="name">Node</span>
                   </a>
                 </span>
 
@@ -1231,18 +1419,7 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/node/" itemprop="url" rel="index">
-                    <span itemprop="name">node</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/node/教程/" itemprop="url" rel="index">
+                  <a href="/categories/Node/教程/" itemprop="url" rel="index">
                     <span itemprop="name">教程</span>
                   </a>
                 </span>
@@ -1831,269 +2008,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://www.wclimb.site/2018/03/06/HTTP缓存——304与200-from-cache/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wclimb">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="wclimb的个人博客--分享">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/06/HTTP缓存——304与200-from-cache/" itemprop="url">HTTP缓存——304与200 from cache</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-06T14:04:29+08:00">
-                2018-03-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/" itemprop="url" rel="index">
-                    <span itemprop="name">javascript</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/HTTP/" itemprop="url" rel="index">
-                    <span itemprop="name">HTTP</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon" style="margin-left:4px;">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">约</span>
-                
-                <span title="约">
-                  3 分钟
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="HTTP与缓存相关的字段"><a href="#HTTP与缓存相关的字段" class="headerlink" title="HTTP与缓存相关的字段"></a>HTTP与缓存相关的字段</h1><h2 id="1-通用字段"><a href="#1-通用字段" class="headerlink" title="1. 通用字段"></a>1. 通用字段</h2><table>
-<thead>
-<tr>
-<th>字段名称</th>
-<th>释义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Cache-Control</td>
-<td>控制缓存具体的行为</td>
-</tr>
-<tr>
-<td>Pragma</td>
-<td>HTTP1.0时的遗留字段，当值为”no-cache”时强制验证缓存</td>
-</tr>
-<tr>
-<td>Date</td>
-<td>创建报文的日期时间(启发式缓存阶段所用)</td>
-</tr>
-</tbody>
-</table>
-<h2 id="2-response字段"><a href="#2-response字段" class="headerlink" title="2. response字段"></a>2. response字段</h2><table>
-<thead>
-<tr>
-<th>字段名称</th>
-<th>释义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>ETag</td>
-<td>服务器生成资源的唯一标识</td>
-</tr>
-<tr>
-<td>Vary</td>
-<td>代理服务器缓存的管理信息</td>
-</tr>
-<tr>
-<td>Age</td>
-<td>资源在缓存代理中存贮的时长(取决于max-age和s-maxage的大小)</td>
-</tr>
-</tbody>
-</table>
-<h2 id="3-request字段"><a href="#3-request字段" class="headerlink" title="3. request字段"></a>3. request字段</h2><table>
-<thead>
-<tr>
-<th>字段名称</th>
-<th>释义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>If-Match</td>
-<td>条件请求，携带上一次请求中资源的ETag，服务器根据这个字段判断文件是否有新的修改</td>
-</tr>
-<tr>
-<td>If-None-Match</td>
-<td>和If-Match作用相反，服务器根据这个字段判断文件是否有新的修改</td>
-</tr>
-<tr>
-<td>If-Modified-Since</td>
-<td>比较资源前后两次访问最后的修改时间是否一致</td>
-</tr>
-<tr>
-<td>If-Unmodified-Since</td>
-<td>比较资源前后两次访问最后的修改时间是否一致</td>
-</tr>
-</tbody>
-</table>
-<h2 id="4-实体字段"><a href="#4-实体字段" class="headerlink" title="4. 实体字段"></a>4. 实体字段</h2><table>
-<thead>
-<tr>
-<th>字段名称</th>
-<th>释义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Expires</td>
-<td>告知客户端资源缓存失效的绝对时间</td>
-</tr>
-<tr>
-<td>Last-Modified</td>
-<td>资源最后一次修改的时间</td>
-</tr>
-</tbody>
-</table>
-<h2 id="协商缓存（304）"><a href="#协商缓存（304）" class="headerlink" title="协商缓存（304）"></a>协商缓存（304）</h2><blockquote>
-<p>If-modified-Since/Last-Modified</p>
-</blockquote>
-<ul>
-<li>浏览器在发送请求的时候服务器会检查请求头<code>request header</code>里面的<code>If-modified-Since</code>，如果最后修改时间相同则返回304，否则给返回头(<code>response header</code>)添加<code>last-Modified</code>并且返回数据(<code>response body</code>)。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">if-modified-since:Wed, 31 May 2017 03:21:09 GMT</span><br><span class="line">if-none-match:&quot;42DD5684635105372FE7720E3B39B96A&quot;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/03/06/HTTP缓存——304与200-from-cache/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2141,7 +2055,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-count">40</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2152,7 +2066,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2163,7 +2077,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

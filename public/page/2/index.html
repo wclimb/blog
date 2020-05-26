@@ -310,6 +310,167 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.wclimb.site/2020/03/08/write-daemon/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wclimb">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wclimb的个人博客--分享">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/03/08/write-daemon/" itemprop="url">编写一个守护进程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-08T22:09:44+08:00">
+                2020-03-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Node/" itemprop="url" rel="index">
+                    <span itemprop="name">Node</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon" style="margin-left:4px;">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">约</span>
+                
+                <span title="约">
+                  3 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="为什么"><a href="#为什么" class="headerlink" title="为什么"></a>为什么</h2><p>我们编写<code>node</code>程序的时候，立马会去执行它，如下所示</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// app.js</span></span><br><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">"http"</span>);</span><br><span class="line">http.createServer(<span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  res.end(<span class="string">"hello world"</span>);</span><br><span class="line">&#125;).listen(<span class="number">3000</span>);</span><br></pre></td></tr></table></figure>
+<p>执行下面命令运行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node app.js</span><br></pre></td></tr></table></figure></p>
+<p>我们接着访问<code>3000</code>端口，貌似没毛病。但是当你退出命令行窗口或者 <code>ctrl+c</code> 终止了程序，再去访问这个程序发现它炸了！你很不解，开始抱怨上天为什么这样对你，然后。。。额，算了，玩笑到此为止，那么怎么才能让它再后台运行呢？<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/03/08/write-daemon/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </p></div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://www.wclimb.site/2019/12/23/Koa源码系列之全流程解析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -364,8 +525,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/" itemprop="url" rel="index">
-                    <span itemprop="name">javascript</span>
+                  <a href="/categories/Node/" itemprop="url" rel="index">
+                    <span itemprop="name">Node</span>
                   </a>
                 </span>
 
@@ -375,7 +536,7 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/Koa/" itemprop="url" rel="index">
+                  <a href="/categories/Node/Koa/" itemprop="url" rel="index">
                     <span itemprop="name">Koa</span>
                   </a>
                 </span>
@@ -536,8 +697,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/" itemprop="url" rel="index">
-                    <span itemprop="name">javascript</span>
+                  <a href="/categories/Node/" itemprop="url" rel="index">
+                    <span itemprop="name">Node</span>
                   </a>
                 </span>
 
@@ -547,7 +708,7 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/Koa/" itemprop="url" rel="index">
+                  <a href="/categories/Node/Koa/" itemprop="url" rel="index">
                     <span itemprop="name">Koa</span>
                   </a>
                 </span>
@@ -707,8 +868,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/" itemprop="url" rel="index">
-                    <span itemprop="name">javascript</span>
+                  <a href="/categories/Node/" itemprop="url" rel="index">
+                    <span itemprop="name">Node</span>
                   </a>
                 </span>
 
@@ -718,7 +879,7 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/Koa/" itemprop="url" rel="index">
+                  <a href="/categories/Node/Koa/" itemprop="url" rel="index">
                     <span itemprop="name">Koa</span>
                   </a>
                 </span>
@@ -1850,193 +2011,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://www.wclimb.site/2019/06/06/webpack系列之初探/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wclimb">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="wclimb的个人博客--分享">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/06/webpack系列之初探/" itemprop="url">webpack系列之初探</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-06T09:09:42+08:00">
-                2019-06-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/" itemprop="url" rel="index">
-                    <span itemprop="name">javascript</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/webpack/" itemprop="url" rel="index">
-                    <span itemprop="name">webpack</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon" style="margin-left:4px;">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">约</span>
-                
-                <span title="约">
-                  14 分钟
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>相信<code>webpack</code>这个名称对于前端的同学来说并不陌生，只要你在用<code>vue</code>、<code>react</code>等等之类的框架，就得天天和它打交道。但是大部分人都只是直接怼一个<code>vue-cli</code>脚手架生成一个项目，运行起来就开始一顿写，完全不会去看这个项目的其他相关的东西，今天开始，咱们就来说说这个又爱又恨的<code>webpack</code></p>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>使用wepack的时候经常会出现下面这些疑问</p>
-<ol>
-<li><font color="red">你webpack只能打包单页面的文件吗？</font></li>
-<li><font color="red">WTF，我包怎么这么大，加载太慢了</font></li>
-<li><font color="red">我打包速度怎么这么慢，什么破玩意？</font><br>…</li>
-</ol>
-<h2 id="为什么要使用webpack"><a href="#为什么要使用webpack" class="headerlink" title="为什么要使用webpack"></a>为什么要使用webpack</h2><p>哈，你问我为什么要用？因为大家都在用啊😃😃。开个玩笑，前端发展到今天，新技术新思想新框架爆发式增长，当前的浏览器环境跑不赢啊，你说你写个ES6/7在浏览器环境都能跑起来？扯淡的。这个时候<code>babel</code>就出现了，你跑不起来是吧，那我转成<code>ES5</code>你总该跑起来吧~，那<code>babel</code>我还是不能直接用啊，肯定得借助工具编译呀，所以我们需要webpack去做这件事情了。<font color="red">这个时候有人就要站出来说了，我gulp不服，我也能做，我就不用<code>webpack</code></font>。你这么说我就要跟你唠唠了，现在我们先来比较一下<code>webpack</code>和<code>gulp</code>。</p>
-<p><code>gulp</code> 是 <code>task runner</code>，<code>Webpack</code> 是 <code>module bundler</code></p>
-<p>webpack的优势在模块化，<code>gulp</code>除了模块化方面都很不错。但是前端发展至今，模块化真的很重要，<code>CMD</code>、<code>AMD</code>就是模块化的产物。<br>简单来说，如果你当前项目需要模块化编程，那就选<code>webpack</code>，如果是处理其他事情，比如把图片拼接成雪碧图或者压缩，那么<code>gulp</code>是最擅长的</p>
-<p>感兴趣的可以看看这个回答 <a href="https://www.zhihu.com/question/45536395/answer/164361274" target="_blank" rel="noopener">gulp 有哪些功能是 webpack 不能替代的？</a></p>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>这里可以参考<a href="https://www.webpackjs.com/guides/getting-started/#%E5%9F%BA%E6%9C%AC%E5%AE%89%E8%A3%85" target="_blank" rel="noopener">webpack官网</a><br>开发环境 <code>webpack: 4.34.0</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; mkdir webpack &amp;&amp; cd webpack</span><br><span class="line">&gt; npm init -y</span><br><span class="line">&gt; npm install webpack webpack-cli -D</span><br></pre></td></tr></table></figure></p>
-<h2 id="入口（entry）"><a href="#入口（entry）" class="headerlink" title="入口（entry）"></a>入口（entry）</h2><p>每个<code>webpack</code>都会有一个<code>entry</code>，就是入口的意思，指示 <code>webpack</code> 应该使用哪个模块，来作为构建其内部依赖图的开始。</p>
-<p>注意点：</p>
-<ol>
-<li>入口可以有多个，如果是单页面只需要一个入口，多页面可以设置多个入口</li>
-<li>入口的文件必须是<code>.js</code>文件，因为<code>webpack</code>只认识<code>js</code>（不完全对，其实任意文件都可以，只是<code>webpack</code>会把它当做<code>js</code>来处理）</li>
-</ol>
-<p>举个🌰<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/06/06/webpack系列之初探/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </p></div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2084,7 +2058,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-count">40</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2095,7 +2069,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2106,7 +2080,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

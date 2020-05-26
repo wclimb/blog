@@ -310,6 +310,258 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.wclimb.site/2018/03/06/HTTP缓存——304与200-from-cache/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wclimb">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wclimb的个人博客--分享">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/06/HTTP缓存——304与200-from-cache/" itemprop="url">HTTP缓存——304与200 from cache</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-06T14:04:29+08:00">
+                2018-03-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/HTTP/" itemprop="url" rel="index">
+                    <span itemprop="name">HTTP</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon" style="margin-left:4px;">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">约</span>
+                
+                <span title="约">
+                  3 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="HTTP与缓存相关的字段"><a href="#HTTP与缓存相关的字段" class="headerlink" title="HTTP与缓存相关的字段"></a>HTTP与缓存相关的字段</h1><h2 id="1-通用字段"><a href="#1-通用字段" class="headerlink" title="1. 通用字段"></a>1. 通用字段</h2><table>
+<thead>
+<tr>
+<th>字段名称</th>
+<th>释义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cache-Control</td>
+<td>控制缓存具体的行为</td>
+</tr>
+<tr>
+<td>Pragma</td>
+<td>HTTP1.0时的遗留字段，当值为”no-cache”时强制验证缓存</td>
+</tr>
+<tr>
+<td>Date</td>
+<td>创建报文的日期时间(启发式缓存阶段所用)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-response字段"><a href="#2-response字段" class="headerlink" title="2. response字段"></a>2. response字段</h2><table>
+<thead>
+<tr>
+<th>字段名称</th>
+<th>释义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ETag</td>
+<td>服务器生成资源的唯一标识</td>
+</tr>
+<tr>
+<td>Vary</td>
+<td>代理服务器缓存的管理信息</td>
+</tr>
+<tr>
+<td>Age</td>
+<td>资源在缓存代理中存贮的时长(取决于max-age和s-maxage的大小)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-request字段"><a href="#3-request字段" class="headerlink" title="3. request字段"></a>3. request字段</h2><table>
+<thead>
+<tr>
+<th>字段名称</th>
+<th>释义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>If-Match</td>
+<td>条件请求，携带上一次请求中资源的ETag，服务器根据这个字段判断文件是否有新的修改</td>
+</tr>
+<tr>
+<td>If-None-Match</td>
+<td>和If-Match作用相反，服务器根据这个字段判断文件是否有新的修改</td>
+</tr>
+<tr>
+<td>If-Modified-Since</td>
+<td>比较资源前后两次访问最后的修改时间是否一致</td>
+</tr>
+<tr>
+<td>If-Unmodified-Since</td>
+<td>比较资源前后两次访问最后的修改时间是否一致</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4-实体字段"><a href="#4-实体字段" class="headerlink" title="4. 实体字段"></a>4. 实体字段</h2><table>
+<thead>
+<tr>
+<th>字段名称</th>
+<th>释义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Expires</td>
+<td>告知客户端资源缓存失效的绝对时间</td>
+</tr>
+<tr>
+<td>Last-Modified</td>
+<td>资源最后一次修改的时间</td>
+</tr>
+</tbody>
+</table>
+<h2 id="协商缓存（304）"><a href="#协商缓存（304）" class="headerlink" title="协商缓存（304）"></a>协商缓存（304）</h2><blockquote>
+<p>If-modified-Since/Last-Modified</p>
+</blockquote>
+<ul>
+<li>浏览器在发送请求的时候服务器会检查请求头<code>request header</code>里面的<code>If-modified-Since</code>，如果最后修改时间相同则返回304，否则给返回头(<code>response header</code>)添加<code>last-Modified</code>并且返回数据(<code>response body</code>)。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">if-modified-since:Wed, 31 May 2017 03:21:09 GMT</span><br><span class="line">if-none-match:&quot;42DD5684635105372FE7720E3B39B96A&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/03/06/HTTP缓存——304与200-from-cache/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://www.wclimb.site/2018/02/14/nodejs微信支付之扫码支付/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -364,8 +616,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/" itemprop="url" rel="index">
-                    <span itemprop="name">javascript</span>
+                  <a href="/categories/Node/" itemprop="url" rel="index">
+                    <span itemprop="name">Node</span>
                   </a>
                 </span>
 
@@ -375,30 +627,8 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/node/" itemprop="url" rel="index">
-                    <span itemprop="name">node</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/node/微信支付/" itemprop="url" rel="index">
-                    <span itemprop="name">微信支付</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/node/微信支付/egg/" itemprop="url" rel="index">
-                    <span itemprop="name">egg</span>
+                  <a href="/categories/Node/Egg/" itemprop="url" rel="index">
+                    <span itemprop="name">Egg</span>
                   </a>
                 </span>
 
@@ -565,19 +795,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/" itemprop="url" rel="index">
-                    <span itemprop="name">javascript</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/node/" itemprop="url" rel="index">
-                    <span itemprop="name">node</span>
+                  <a href="/categories/Node/" itemprop="url" rel="index">
+                    <span itemprop="name">Node</span>
                   </a>
                 </span>
 
@@ -1169,19 +1388,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/" itemprop="url" rel="index">
-                    <span itemprop="name">javascript</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/node/" itemprop="url" rel="index">
-                    <span itemprop="name">node</span>
+                  <a href="/categories/Node/" itemprop="url" rel="index">
+                    <span itemprop="name">Node</span>
                   </a>
                 </span>
 
@@ -1842,7 +2050,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-count">40</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1853,7 +2061,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -1864,7 +2072,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
