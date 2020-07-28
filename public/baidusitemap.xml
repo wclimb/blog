@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://www.wclimb.site/2020/07/28/2020-07-interview/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>  <url>
+    <loc>http://www.wclimb.site/2020/03/17/vue-source-code-virtual-dom/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>  <url>
+    <loc>http://www.wclimb.site/2020/04/15/node-process/</loc>
+    <lastmod>2020-06-23</lastmod>
+  </url>  <url>
     <loc>http://www.wclimb.site/2020/05/26/write-euv/</loc>
     <lastmod>2020-05-26</lastmod>
   </url>  <url>
@@ -43,9 +52,6 @@
     <loc>http://www.wclimb.site/2020/04/22/simple-webpack/</loc>
     <lastmod>2020-04-22</lastmod>
   </url>  <url>
-    <loc>http://www.wclimb.site/2020/04/15/node-process/</loc>
-    <lastmod>2020-04-16</lastmod>
-  </url>  <url>
     <loc>http://www.wclimb.site/2020/04/14/node-template/</loc>
     <lastmod>2020-04-15</lastmod>
   </url>  <url>
@@ -63,9 +69,6 @@
   </url>  <url>
     <loc>http://www.wclimb.site/2020/03/19/simple-virtual-dom/</loc>
     <lastmod>2020-03-25</lastmod>
-  </url>  <url>
-    <loc>http://www.wclimb.site/2020/03/17/vue-source-code-virtual-dom/</loc>
-    <lastmod>2020-03-24</lastmod>
   </url>  <url>
     <loc>http://www.wclimb.site/2020/03/15/vue-source-code-data-bind/</loc>
     <lastmod>2020-03-17</lastmod>
